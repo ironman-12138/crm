@@ -9,5 +9,21 @@
         resultType:表示select语句执行后得到的java结果类型，
         是sql语句执行后的ResultSet值为类型的全限定名称
     -->
+    <select id="getActivityRemark" resultType="int">
+        select count(*)
+        from tbl_activity_remark
+        where activityId in
+        <foreach collection="array" item="aid" open="(" close=")" separator=",">
+            #{aid}
+        </foreach>
+    </select>
 
+    <delete id="deleteActivityRemark">
+        delete
+        from tbl_activity_remark
+        where activityId in
+        <foreach collection="array" item="aid" open="(" close=")" separator=",">
+            #{aid}
+        </foreach>
+    </delete>
 </mapper>

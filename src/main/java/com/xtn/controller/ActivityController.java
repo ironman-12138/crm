@@ -69,4 +69,18 @@ public class ActivityController {
         PaginationVo<Activity> vo = activityService.selectActivityList(map);
         return vo;
     }
+
+    //删除市场活动信息
+    @RequestMapping(value = "/deleteActivity.do",method = RequestMethod.POST)
+    @ResponseBody
+    public Object deleteActivity(String[] id){
+        for (int i = 0; i < id.length; i++) {
+            System.out.println(id[i]);
+        }
+        boolean flag = false;
+        flag = activityService.deleteActivity(id);
+        Map<String,Object> map = new HashMap<>();
+        map.put("success",flag);
+        return map;
+    }
 }

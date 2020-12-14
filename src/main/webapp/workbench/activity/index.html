@@ -23,8 +23,56 @@
 
 		/*为全选框绑定事件*/
 		$("#selectAll").on("click",function () {
-
+			$("input[name=activityId]").prop("checked",this.checked);
 		})
+
+		/*为删除按钮绑定事件*/
+		$("#deleteBtn").on("click",function () {
+			//获取复选框选中的元素对象
+			var $fx = $("input[name=activityId]:checked");
+			if ($fx.length == 0){
+				alert("请选中要删除的选项");
+			}else {
+				if (confirm("确定要删除选中的记录吗")){
+
+					//获取复选框选中的元素id值，拼接成字符串（id=...&id=...）
+					var html = "";
+					for (var i = 0; i < $fx.length; i++){
+						html += "id=" + $($fx[i]).val();
+						if (i < $fx.length - 1){
+							//在不是最后一个元素的后面+&
+							html += "&";
+						}
+					}
+					$.ajax({
+						url:"activity/deleteActivity.do",
+						data:html,
+						dataType:"json",
+						type:"post",
+						success:function (data) {
+							//data:{success:true/false}
+							if (data.success){
+								//刷新市场活动信息第一页
+								pageList(1,2);
+							}else {
+								alert("删除失败");
+							}
+						}
+					})
+
+				}
+			}
+		})
+
+		/*
+		* 为动态生成的按钮绑定事件,要用on方法，取有效的外层元素
+		* 语法：$(有效的外层元素).on(绑定事件的方式,需要绑定事件元素对象,回调函数)
+		* */
+		$("#activityBody").on("click",$("input[name=activityId]"),function () {
+			//当所有元素的复选框都选中，全选框就选中
+			$("#selectAll").prop("checked",$("input[name=activityId]").length == $("input[name=activityId]:checked").length);
+		})
+
 
 		/*为查询按钮绑定事件*/
 		$("#searchBtn").on("click",function () {
@@ -154,7 +202,7 @@
 				var html = "";
 				$.each(data.dataList,function (i,n) {
 					html += '<tr class="active">' +
-							'<td><input type="checkbox" value="' + n.id + '"/></td>' +
+							'<td><input type="checkbox" name="activityId" value="' + n.id + '"/></td>' +
 							'<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.html\';">' + n.name + '</a></td>' +
 							'<td>' + n.owner + '</td>' +
 							'<td>' + n.startDate + '</td>' +
@@ -162,6 +210,8 @@
 							'</tr>';
 				})
 				$("#activityBody").html(html);
+				//每次查询都取消全选框的√
+				$("#selectAll").prop("checked",false);
 
 				//计算总页数
 				var totalPages = data.total % pageSize == 0 ? data.total / pageSize : parseInt(data.total / pageSize) + 1
@@ -386,7 +436,7 @@
 					-->
 				  <button type="button" class="btn btn-primary" id="addBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" id="editBtn"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
 			</div>

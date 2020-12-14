@@ -17,4 +17,7 @@ public interface ActivityService {
 
     //根据条件查询市场活动信息集合
     public PaginationVo selectActivityList(Map map);
+
+    //根据id删除市场活动信息
+    public boolean deleteActivity(String[] id);
 }
