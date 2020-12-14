@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop
+       https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--jdbc配置文件的位置-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+    <!--声明数据源DataSource，作用是连接数据库-->
+    <bean id="myDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <!--set注入给DruidDataSource提供连接数据库的信息-->
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+
+        <property name="filters" value="stat"/>
+
+        <property name="maxActive" value="${jdbc.max}"/>
+        <property name="initialSize" value="1"/>
+        <property name="maxWait" value="60000"/>
+        <property name="minIdle" value="1"/>
+
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+        <property name="minEvictableIdleTimeMillis" value="300000"/>
+
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="false"/>
+        <property name="testOnReturn" value="false"/>
+
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="maxOpenPreparedStatements" value="20"/>
+
+        <property name="asyncInit" value="true"/>
+    </bean>
+
+    <!--声明mybatis中提供的SqlSessionFactoryBean类，这个类内部创建SqlSessionFactory-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--set注入，把连接池赋给dataSource属性-->
+        <property name="dataSource" ref="myDataSource"/>
+        <!--mybatis配置文件的位置-->
+        <property name="configLocation" value="classpath:mybatis.xml"/>
+    </bean>
+
+    <!--
+        创建dao对象，使用SqlSession的getMapper(dao类.class)==动态代理实现接口
+        MapperScannerConfigurer：在内部调用getMapper创建每个dao接口的代理对象
+    -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--指定sqlSessionFactory对象的id-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <!--
+        指定dao类对象的包名，扫描包类的所有接口，
+        将每个接口都执行一次getMapper()方法，
+        将创建好的对象放入spring容器
+        -->
+        <property name="basePackage" value="com.xtn.dao"/>
+    </bean>
+
+    <!--声明service注解所在的包名-->
+    <context:component-scan base-package="com.xtn.service"/>
+
+    <!--使用spring的事务处理-->
+    <!--声明事务管理器-->
+    <bean id="TransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--连接数据库，指定数据源-->
+        <property name="dataSource" ref="myDataSource"/>
+    </bean>
+
+    <!--事务与业务代码分离-->
+    <!--声明业务方法的事务属性-->
+    <tx:advice id="myAdvice" transaction-manager="TransactionManager">
+        <tx:attributes>
+            <!--
+                method:给具体的方法配置事务属性
+                (以下属性不写皆默认)
+                name:完整的方法名，不带包名，也可以用通配符*
+                propagation:事务的传播行为
+                isolation:隔离级别
+                rollback-for:指定异常类名，发生一定回滚
+            -->
+            <tx:method name="*"/>
+            <!--<tx:method name="buyGoods" propagation="REQUIRED" isolation="DEFAULT"
+                       rollback-for="java.lang.NullPointerException,com.xtn.except.MyException"/>-->
+        </tx:attributes>
+    </tx:advice>
+
+    <!--配置Aop-->
+    <aop:config>
+        <!--配置切入点表达式，expression：指定哪些类要配置事务-->
+        <aop:pointcut id="myPointcut" expression="execution(* *..service..*.*(..))"/>
+        <!--配置增强器：关联事务属性的方法和切入点-->
+        <aop:advisor advice-ref="myAdvice" pointcut-ref="myPointcut"/>
+    </aop:config>
+</beans>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace是命名空间，要求是Dao接口的全限定名称-->
+<mapper namespace="com.xtn.dao.ActivityDao">
+
+    <!--sql代码片段-->
+    <sql id="activitySql">
+        id,owner,name,startDate,endDate,cost,description,createTime,createBy,editTime,editBy
+    </sql>
+
+    <!--
+        id:为sql语句唯一标识符，要求是接口中的方法名称
+        resultType:表示select语句执行后得到的java结果类型，
+        是sql语句执行后的ResultSet值为类型的全限定名称
+    -->
+
+    <insert id="saveUserActivity">
+        insert into tbl_activity(<include refid="activitySql"></include>)
+        values(#{id},#{owner},#{name},#{startDate},#{endDate},#{cost},#{description},#{createTime},#{createBy},#{editTime},#{editBy})
+    </insert>
+
+    <select id="selectActivityList" resultType="com.xtn.domain.Activity">
+        select a.id,a.name,u.name as owner,a.startDate,a.endDate
+        from tbl_activity a
+        join tbl_user u
+        on a.owner = u.id
+        <where>
+            <if test="owner != null and owner != ''">
+                u.name like '%' #{owner} '%'
+            </if>
+            <if test="name != null and name != ''">
+                and a.name like '%' #{name} '%'
+            </if>
+            <if test="startDate != null and startDate != ''">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and a.endDate &lt; #{endDate}
+            </if>
+        </where>
+        order by a.createTime desc
+    </select>
+</mapper>
