@@ -5,11 +5,15 @@ import com.github.pagehelper.PageInfo;
 import com.xtn.dao.ActivityDao;
 import com.xtn.dao.ActivityRemarkDao;
 import com.xtn.domain.Activity;
+import com.xtn.domain.ActivityRemark;
+import com.xtn.exception.TransactionException;
 import com.xtn.service.ActivityService;
+import com.xtn.service.UserService;
 import com.xtn.vo.PaginationVo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +24,8 @@ public class ActivityServiceImpl implements ActivityService {
     public ActivityDao activityDao;
     @Resource
     public ActivityRemarkDao activityRemarkDao;
+    @Resource
+    public UserService userService;
 
     @Override
     public boolean saveUserActivity(Activity activity) {
@@ -58,12 +64,12 @@ public class ActivityServiceImpl implements ActivityService {
         //先要删除掉市场活动备注表中与id所在记录相关联的记录
         //查询出要删除的备注数
         int count1 = activityRemarkDao.getActivityRemark(id);
-        System.out.println("count1 = " + count1);
         //删除备注，返回受影响的条数（实际删除的数量）
         int count2 = activityRemarkDao.deleteActivityRemark(id);
-        System.out.println("count2 = " + count2);
         if (count1 != count2){
             flag = false;
+        }else {
+            throw new TransactionException("要删除的备注数量不对");
         }
 
         count = activityDao.deleteActivity(id);
@@ -71,6 +77,69 @@ public class ActivityServiceImpl implements ActivityService {
         System.out.println("id.length = " + id.length);
         if (count == id.length){
             //所有删除语句都执行成功
+            flag = true;
+        }else {
+            throw new TransactionException("没有删除成功所有要删除的市场活动");
+        }
+        return flag;
+    }
+
+    @Override
+    public Map<String,Object> selectUserActivity(String id) {
+        Activity activity = activityDao.selectUserActivity(id);
+        List uList = userService.selectUserList();
+        Map<String,Object> map = new HashMap<>();
+        map.put("uList",uList);
+        map.put("a",activity);
+        return map;
+    }
+
+    @Override
+    public boolean updateUserActivity(Activity activity) {
+        boolean flag = false;
+        int count = activityDao.updateUserActivity(activity);
+        if (count == 1){
+            flag = true;
+        }
+        return flag;
+    }
+
+    @Override
+    public Activity selectActivity(String id) {
+        return activityDao.detail(id);
+    }
+
+    @Override
+    public List<ActivityRemark> getRemarkListByAId(String activityId) {
+        List<ActivityRemark> list = activityRemarkDao.getRemarkListByAId(activityId);
+        return list;
+    }
+
+    @Override
+    public boolean deleteRemarkById(String id) {
+        boolean flag = false;
+        int result = activityRemarkDao.deleteRemarkById(id);
+        if (result == 1){
+            flag = true;
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean saveActivityRemark(ActivityRemark ar) {
+        boolean flag = false;
+        int count = activityRemarkDao.saveActivityRemark(ar);
+        if (count == 1){
+            flag = true;
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean updateActivityRemark(ActivityRemark ar) {
+        boolean flag = false;
+        int count = activityRemarkDao.updateActivityRemark(ar);
+        if (count == 1){
             flag = true;
         }
         return flag;

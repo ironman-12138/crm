@@ -4,6 +4,15 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--namespace是命名空间，要求是Dao接口的全限定名称-->
 <mapper namespace="com.xtn.dao.ActivityRemarkDao">
+
+    <!--sql代码片段-->
+    <sql id="sql1">
+        id,noteContent,createTime,createBy,editTime,editBy,editFlag
+    </sql>
+    <sql id="sql2">
+        id,noteContent,createTime,createBy,editFlag,activityId
+    </sql>
+
     <!--
         id:为sql语句唯一标识符，要求是接口中的方法名称
         resultType:表示select语句执行后得到的java结果类型，
@@ -26,4 +35,28 @@
             #{aid}
         </foreach>
     </delete>
+
+    <select id="getRemarkListByAId" resultType="com.xtn.domain.ActivityRemark">
+        select <include refid="sql1"></include>
+        from tbl_activity_remark
+        where activityId = #{activityId}
+    </select>
+
+    <delete id="deleteRemarkById">
+        delete
+        from tbl_activity_remark
+        where id = #{id}
+    </delete>
+
+    <insert id="saveActivityRemark">
+        insert
+        into tbl_activity_remark(<include refid="sql2"></include>)
+        values (#{id},#{noteContent},#{createTime},#{createBy},#{editFlag},#{activityId})
+    </insert>
+
+    <update id="updateActivityRemark">
+        update tbl_activity_remark
+        set noteContent = #{noteContent},editTime = #{editTime},editBy = #{editBy},editFlag = #{editFlag}
+        where id = #{id}
+    </update>
 </mapper>

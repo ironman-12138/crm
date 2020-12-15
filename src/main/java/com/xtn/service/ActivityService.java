@@ -1,6 +1,7 @@
 package com.xtn.service;
 
 import com.xtn.domain.Activity;
+import com.xtn.domain.ActivityRemark;
 import com.xtn.vo.PaginationVo;
 
 import java.util.List;
@@ -20,4 +21,25 @@ public interface ActivityService {
 
     //根据id删除市场活动信息
     public boolean deleteActivity(String[] id);
+
+    //根据id查询市场活动信息详情和user对象集合
+    public Map<String,Object> selectUserActivity(String id);
+
+    //修改市场活动信息
+    public boolean updateUserActivity(Activity activity);
+
+    //根据id查询市场活动信息详情
+    Activity selectActivity(String id);
+
+    //根据活动id（activityId）获取所有记录
+    public List<ActivityRemark> getRemarkListByAId(String activityId);
+
+    //根据id删除市场活动信息备注
+    public boolean deleteRemarkById(String id);
+
+    //添加活动备注
+    public boolean saveActivityRemark(ActivityRemark ar);
+
+    //修改备注信息
+    public boolean updateActivityRemark(ActivityRemark ar);
 }

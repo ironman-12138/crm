@@ -51,4 +51,31 @@
             #{aid}
         </foreach>
     </delete>
+
+    <select id="selectUserActivity" resultType="com.xtn.domain.Activity">
+        select id,owner,name,startDate,endDate,cost,description
+        from tbl_activity
+        where id = #{id}
+    </select>
+
+    <update id="updateUserActivity">
+        update tbl_activity
+        set owner=#{owner},
+            name=#{name},
+            startDate=#{startDate},
+            endDate=#{endDate},
+            cost=#{cost},
+            description=#{description},
+            editTime=#{editTime},
+            editBy=#{editBy}
+        where id=#{id}
+    </update>
+
+    <select id="detail" resultType="com.xtn.domain.Activity">
+        select a.id,u.name as owner,a.name,a.startDate,a.endDate,a.cost,a.description,a.createTime,a.createBy,a.editTime,a.editBy
+        from tbl_activity a
+        join tbl_user u
+        on a.owner = u.id
+        where a.id = #{id}
+    </select>
 </mapper>
