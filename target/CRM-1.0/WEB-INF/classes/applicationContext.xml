@@ -100,4 +100,8 @@
         <!--配置增强器：关联事务属性的方法和切入点-->
         <aop:advisor advice-ref="myAdvice" pointcut-ref="myPointcut"/>
     </aop:config>
+
+    <!--声明service-->
+    <bean id="dicService" class="com.xtn.service.impl.DicServiceImpl">
+    </bean>
 </beans>

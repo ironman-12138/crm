@@ -1,7 +1,15 @@
 package com.xtn;
 
+import com.xtn.dao.DicTypeDao;
+import com.xtn.service.ActivityService;
+import com.xtn.service.DicService;
+import com.xtn.service.impl.ActivityServiceImpl;
+import com.xtn.service.impl.DicServiceImpl;
 import com.xtn.utils.DateTimeUtil;
 import org.junit.Test;
+
+import java.util.List;
+import java.util.Map;
 
 public class TestUser {
 
@@ -38,4 +46,5 @@ public class TestUser {
             System.out.println("当前ip地址不允许访问，请联系管理员");
         }
     }
+
 }

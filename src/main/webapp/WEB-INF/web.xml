@@ -37,6 +37,10 @@
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
+  <!--注册声明服务器启动监听器-->
+  <listener>
+    <listener-class>com.xtn.web.listener.SysInitListener</listener-class>
+  </listener>
 
   <!--注册声明过滤器-->
   <filter>

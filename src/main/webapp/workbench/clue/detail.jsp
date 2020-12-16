@@ -1,32 +1,34 @@
+<%@page pageEncoding="GB18030"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-
-<link href="../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<script type="text/javascript" src="../../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+	<!--base±ê¼Ç£¬Ö»¶Ô¸ÃÒ³ÃæËùÓÐÏà¶ÔÂ·¾¶Æð×÷ÓÃ-->
+	<base href="http://127.0.0.1:8080/myWeb/">
+<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
 
-	//é»˜è®¤æƒ…å†µä¸‹å–æ¶ˆå’Œä¿å­˜æŒ‰é’®æ˜¯éšè—çš„
+	//Ä¬ÈÏÇé¿öÏÂÈ¡ÏûºÍ±£´æ°´Å¥ÊÇÒþ²ØµÄ
 	var cancelAndSaveBtnDefault = true;
 	
 	$(function(){
 		$("#remark").focus(function(){
 			if(cancelAndSaveBtnDefault){
-				//è®¾ç½®remarkDivçš„é«˜åº¦ä¸º130px
+				//ÉèÖÃremarkDivµÄ¸ß¶ÈÎª130px
 				$("#remarkDiv").css("height","130px");
-				//æ˜¾ç¤º
+				//ÏÔÊ¾
 				$("#cancelAndSaveBtn").show("2000");
 				cancelAndSaveBtnDefault = false;
 			}
 		});
 		
 		$("#cancelBtn").click(function(){
-			//æ˜¾ç¤º
+			//ÏÔÊ¾
 			$("#cancelAndSaveBtn").hide();
-			//è®¾ç½®remarkDivçš„é«˜åº¦ä¸º130px
+			//ÉèÖÃremarkDivµÄ¸ß¶ÈÎª130px
 			$("#remarkDiv").css("height","90px");
 			cancelAndSaveBtnDefault = true;
 		});
@@ -53,21 +55,21 @@
 </head>
 <body>
 
-	<!-- å…³è”å¸‚åœºæ´»åŠ¨çš„æ¨¡æ€çª—å£ -->
+	<!-- ¹ØÁªÊÐ³¡»î¶¯µÄÄ£Ì¬´°¿Ú -->
 	<div class="modal fade" id="bundModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 80%;">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">
-						<span aria-hidden="true">Ã—</span>
+						<span aria-hidden="true">¡Á</span>
 					</button>
-					<h4 class="modal-title">å…³è”å¸‚åœºæ´»åŠ¨</h4>
+					<h4 class="modal-title">¹ØÁªÊÐ³¡»î¶¯</h4>
 				</div>
 				<div class="modal-body">
 					<div class="btn-group" style="position: relative; top: 18%; left: 8px;">
 						<form class="form-inline" role="form">
 						  <div class="form-group has-feedback">
-						    <input type="text" class="form-control" style="width: 300px;" placeholder="è¯·è¾“å…¥å¸‚åœºæ´»åŠ¨åç§°ï¼Œæ”¯æŒæ¨¡ç³ŠæŸ¥è¯¢">
+						    <input type="text" class="form-control" style="width: 300px;" placeholder="ÇëÊäÈëÊÐ³¡»î¶¯Ãû³Æ£¬Ö§³ÖÄ£ºý²éÑ¯">
 						    <span class="glyphicon glyphicon-search form-control-feedback"></span>
 						  </div>
 						</form>
@@ -76,24 +78,24 @@
 						<thead>
 							<tr style="color: #B3B3B3;">
 								<td><input type="checkbox"/></td>
-								<td>åç§°</td>
-								<td>å¼€å§‹æ—¥æœŸ</td>
-								<td>ç»“æŸæ—¥æœŸ</td>
-								<td>æ‰€æœ‰è€…</td>
+								<td>Ãû³Æ</td>
+								<td>¿ªÊ¼ÈÕÆÚ</td>
+								<td>½áÊøÈÕÆÚ</td>
+								<td>ËùÓÐÕß</td>
 								<td></td>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
 								<td><input type="checkbox"/></td>
-								<td>å‘ä¼ å•</td>
+								<td>·¢´«µ¥</td>
 								<td>2020-10-10</td>
 								<td>2020-10-20</td>
 								<td>zhangsan</td>
 							</tr>
 							<tr>
 								<td><input type="checkbox"/></td>
-								<td>å‘ä¼ å•</td>
+								<td>·¢´«µ¥</td>
 								<td>2020-10-10</td>
 								<td>2020-10-20</td>
 								<td>zhangsan</td>
@@ -102,28 +104,28 @@
 					</table>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">å–æ¶ˆ</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">å…³è”</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">È¡Ïû</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal">¹ØÁª</button>
 				</div>
 			</div>
 		</div>
 	</div>
 
-    <!-- ä¿®æ”¹çº¿ç´¢çš„æ¨¡æ€çª—å£ -->
+    <!-- ÐÞ¸ÄÏßË÷µÄÄ£Ì¬´°¿Ú -->
     <div class="modal fade" id="editClueModal" role="dialog">
         <div class="modal-dialog" role="document" style="width: 90%;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">Ã—</span>
+                        <span aria-hidden="true">¡Á</span>
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">ä¿®æ”¹çº¿ç´¢</h4>
+                    <h4 class="modal-title" id="myModalLabel">ÐÞ¸ÄÏßË÷</h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" role="form">
 
                         <div class="form-group">
-                            <label for="edit-clueOwner" class="col-sm-2 control-label">æ‰€æœ‰è€…<span style="font-size: 15px; color: red;">*</span></label>
+                            <label for="edit-clueOwner" class="col-sm-2 control-label">ËùÓÐÕß<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="edit-clueOwner">
                                     <option>zhangsan</option>
@@ -131,99 +133,99 @@
                                     <option>wangwu</option>
                                 </select>
                             </div>
-                            <label for="edit-company" class="col-sm-2 control-label">å…¬å¸<span style="font-size: 15px; color: red;">*</span></label>
+                            <label for="edit-company" class="col-sm-2 control-label">¹«Ë¾<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-company" value="åŠ¨åŠ›èŠ‚ç‚¹">
+                                <input type="text" class="form-control" id="edit-company" value="¶¯Á¦½Úµã">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="edit-call" class="col-sm-2 control-label">ç§°å‘¼</label>
+                            <label for="edit-call" class="col-sm-2 control-label">³Æºô</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="edit-call">
                                     <option></option>
-                                    <option selected>å…ˆç”Ÿ</option>
-                                    <option>å¤«äºº</option>
-                                    <option>å¥³å£«</option>
-                                    <option>åšå£«</option>
-                                    <option>æ•™æŽˆ</option>
+                                    <option selected>ÏÈÉú</option>
+                                    <option>·òÈË</option>
+                                    <option>Å®Ê¿</option>
+                                    <option>²©Ê¿</option>
+                                    <option>½ÌÊÚ</option>
                                 </select>
                             </div>
-                            <label for="edit-surname" class="col-sm-2 control-label">å§“å<span style="font-size: 15px; color: red;">*</span></label>
+                            <label for="edit-surname" class="col-sm-2 control-label">ÐÕÃû<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-surname" value="æŽå››">
+                                <input type="text" class="form-control" id="edit-surname" value="ÀîËÄ">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="edit-job" class="col-sm-2 control-label">èŒä½</label>
+                            <label for="edit-job" class="col-sm-2 control-label">Ö°Î»</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="edit-job" value="CTO">
                             </div>
-                            <label for="edit-email" class="col-sm-2 control-label">é‚®ç®±</label>
+                            <label for="edit-email" class="col-sm-2 control-label">ÓÊÏä</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="edit-email" value="lisi@bjpowernode.com">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="edit-phone" class="col-sm-2 control-label">å…¬å¸åº§æœº</label>
+                            <label for="edit-phone" class="col-sm-2 control-label">¹«Ë¾×ù»ú</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="edit-phone" value="010-84846003">
                             </div>
-                            <label for="edit-website" class="col-sm-2 control-label">å…¬å¸ç½‘ç«™</label>
+                            <label for="edit-website" class="col-sm-2 control-label">¹«Ë¾ÍøÕ¾</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="edit-website" value="http://www.bjpowernode.com">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="edit-mphone" class="col-sm-2 control-label">æ‰‹æœº</label>
+                            <label for="edit-mphone" class="col-sm-2 control-label">ÊÖ»ú</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="edit-mphone" value="12345678901">
                             </div>
-                            <label for="edit-status" class="col-sm-2 control-label">çº¿ç´¢çŠ¶æ€</label>
+                            <label for="edit-status" class="col-sm-2 control-label">ÏßË÷×´Ì¬</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="edit-status">
                                     <option></option>
-                                    <option>è¯•å›¾è”ç³»</option>
-                                    <option>å°†æ¥è”ç³»</option>
-                                    <option selected>å·²è”ç³»</option>
-                                    <option>è™šå‡çº¿ç´¢</option>
-                                    <option>ä¸¢å¤±çº¿ç´¢</option>
-                                    <option>æœªè”ç³»</option>
-                                    <option>éœ€è¦æ¡ä»¶</option>
+                                    <option>ÊÔÍ¼ÁªÏµ</option>
+                                    <option>½«À´ÁªÏµ</option>
+                                    <option selected>ÒÑÁªÏµ</option>
+                                    <option>Ðé¼ÙÏßË÷</option>
+                                    <option>¶ªÊ§ÏßË÷</option>
+                                    <option>Î´ÁªÏµ</option>
+                                    <option>ÐèÒªÌõ¼þ</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="edit-source" class="col-sm-2 control-label">çº¿ç´¢æ¥æº</label>
+                            <label for="edit-source" class="col-sm-2 control-label">ÏßË÷À´Ô´</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="edit-source">
                                     <option></option>
-                                    <option selected>å¹¿å‘Š</option>
-                                    <option>æŽ¨é”€ç”µè¯</option>
-                                    <option>å‘˜å·¥ä»‹ç»</option>
-                                    <option>å¤–éƒ¨ä»‹ç»</option>
-                                    <option>åœ¨çº¿å•†åœº</option>
-                                    <option>åˆä½œä¼™ä¼´</option>
-                                    <option>å…¬å¼€åª’ä»‹</option>
-                                    <option>é”€å”®é‚®ä»¶</option>
-                                    <option>åˆä½œä¼™ä¼´ç ”è®¨ä¼š</option>
-                                    <option>å†…éƒ¨ç ”è®¨ä¼š</option>
-                                    <option>äº¤æ˜“ä¼š</option>
-                                    <option>webä¸‹è½½</option>
-                                    <option>webè°ƒç ”</option>
-                                    <option>èŠå¤©</option>
+                                    <option selected>¹ã¸æ</option>
+                                    <option>ÍÆÏúµç»°</option>
+                                    <option>Ô±¹¤½éÉÜ</option>
+                                    <option>Íâ²¿½éÉÜ</option>
+                                    <option>ÔÚÏßÉÌ³¡</option>
+                                    <option>ºÏ×÷»ï°é</option>
+                                    <option>¹«¿ªÃ½½é</option>
+                                    <option>ÏúÊÛÓÊ¼þ</option>
+                                    <option>ºÏ×÷»ï°éÑÐÌÖ»á</option>
+                                    <option>ÄÚ²¿ÑÐÌÖ»á</option>
+                                    <option>½»Ò×»á</option>
+                                    <option>webÏÂÔØ</option>
+                                    <option>webµ÷ÑÐ</option>
+                                    <option>ÁÄÌì</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="edit-describe" class="col-sm-2 control-label">æè¿°</label>
+                            <label for="edit-describe" class="col-sm-2 control-label">ÃèÊö</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="3" id="edit-describe">è¿™æ˜¯ä¸€æ¡çº¿ç´¢çš„æè¿°ä¿¡æ¯</textarea>
+                                <textarea class="form-control" rows="3" id="edit-describe">ÕâÊÇÒ»ÌõÏßË÷µÄÃèÊöÐÅÏ¢</textarea>
                             </div>
                         </div>
 
@@ -231,13 +233,13 @@
 
                         <div style="position: relative;top: 15px;">
                             <div class="form-group">
-                                <label for="edit-contactSummary" class="col-sm-2 control-label">è”ç³»çºªè¦</label>
+                                <label for="edit-contactSummary" class="col-sm-2 control-label">ÁªÏµ¼ÍÒª</label>
                                 <div class="col-sm-10" style="width: 81%;">
-                                    <textarea class="form-control" rows="3" id="edit-contactSummary">è¿™ä¸ªçº¿ç´¢å³å°†è¢«è½¬æ¢</textarea>
+                                    <textarea class="form-control" rows="3" id="edit-contactSummary">Õâ¸öÏßË÷¼´½«±»×ª»»</textarea>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="edit-nextContactTime" class="col-sm-2 control-label">ä¸‹æ¬¡è”ç³»æ—¶é—´</label>
+                                <label for="edit-nextContactTime" class="col-sm-2 control-label">ÏÂ´ÎÁªÏµÊ±¼ä</label>
                                 <div class="col-sm-10" style="width: 300px;">
                                     <input type="text" class="form-control" id="edit-nextContactTime" value="2017-05-01">
                                 </div>
@@ -248,9 +250,9 @@
 
                         <div style="position: relative;top: 20px;">
                             <div class="form-group">
-                                <label for="edit-address" class="col-sm-2 control-label">è¯¦ç»†åœ°å€</label>
+                                <label for="edit-address" class="col-sm-2 control-label">ÏêÏ¸µØÖ·</label>
                                 <div class="col-sm-10" style="width: 81%;">
-                                    <textarea class="form-control" rows="1" id="edit-address">åŒ—äº¬å¤§å…´åŒºå¤§æ—ä¼ä¸šæ¹¾</textarea>
+                                    <textarea class="form-control" rows="1" id="edit-address">±±¾©´óÐËÇø´ó×åÆóÒµÍå</textarea>
                                 </div>
                             </div>
                         </div>
@@ -258,128 +260,128 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">å…³é—­</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">æ›´æ–°</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">¹Ø±Õ</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">¸üÐÂ</button>
                 </div>
             </div>
         </div>
     </div>
 
-	<!-- è¿”å›žæŒ‰é’® -->
+	<!-- ·µ»Ø°´Å¥ -->
 	<div style="position: relative; top: 35px; left: 10px;">
 		<a href="javascript:void(0);" onclick="window.history.back();"><span class="glyphicon glyphicon-arrow-left" style="font-size: 20px; color: #DDDDDD"></span></a>
 	</div>
 	
-	<!-- å¤§æ ‡é¢˜ -->
+	<!-- ´ó±êÌâ -->
 	<div style="position: relative; left: 40px; top: -30px;">
 		<div class="page-header">
-			<h3>æŽå››å…ˆç”Ÿ <small>åŠ¨åŠ›èŠ‚ç‚¹</small></h3>
+			<h3>${c.fullname}${c.appellation} <small>${c.company}</small></h3>
 		</div>
 		<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
-			<button type="button" class="btn btn-default" onclick="window.location.href='convert.html';"><span class="glyphicon glyphicon-retweet"></span> è½¬æ¢</button>
-			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-edit"></span> ç¼–è¾‘</button>
-			<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> åˆ é™¤</button>
+			<button type="button" class="btn btn-default" onclick="window.location.href='workbench/clue/convert.html';"><span class="glyphicon glyphicon-retweet"></span> ×ª»»</button>
+			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-edit"></span> ±à¼­</button>
+			<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> É¾³ý</button>
 		</div>
 	</div>
 	
-	<!-- è¯¦ç»†ä¿¡æ¯ -->
+	<!-- ÏêÏ¸ÐÅÏ¢ -->
 	<div style="position: relative; top: -70px;">
 		<div style="position: relative; left: 40px; height: 30px;">
-			<div style="width: 300px; color: gray;">åç§°</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>æŽå››å…ˆç”Ÿ</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">æ‰€æœ‰è€…</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>zhangsan</b></div>
+			<div style="width: 300px; color: gray;">Ãû³Æ</div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${c.fullname}${c.appellation}</b></div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">ËùÓÐÕß</div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${c.owner}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 10px;">
-			<div style="width: 300px; color: gray;">å…¬å¸</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>åŠ¨åŠ›èŠ‚ç‚¹</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">èŒä½</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>CTO</b></div>
+			<div style="width: 300px; color: gray;">¹«Ë¾</div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${c.company}</b></div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">Ö°Î»</div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${c.job}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 20px;">
-			<div style="width: 300px; color: gray;">é‚®ç®±</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>lisi@bjpowernode.com</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">å…¬å¸åº§æœº</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>010-84846003</b></div>
+			<div style="width: 300px; color: gray;">ÓÊÏä</div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${c.email}</b></div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">¹«Ë¾×ù»ú</div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${c.phone}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 30px;">
-			<div style="width: 300px; color: gray;">å…¬å¸ç½‘ç«™</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>http://www.bjpowernode.com</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">æ‰‹æœº</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>12345678901</b></div>
+			<div style="width: 300px; color: gray;">¹«Ë¾ÍøÕ¾</div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${c.website}</b></div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">ÊÖ»ú</div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${c.mphone}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 40px;">
-			<div style="width: 300px; color: gray;">çº¿ç´¢çŠ¶æ€</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>å·²è”ç³»</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">çº¿ç´¢æ¥æº</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>å¹¿å‘Š</b></div>
+			<div style="width: 300px; color: gray;">ÏßË÷×´Ì¬</div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${c.state}</b></div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">ÏßË÷À´Ô´</div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${c.source}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 50px;">
-			<div style="width: 300px; color: gray;">åˆ›å»ºè€…</div>
-			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>zhangsan&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">2017-01-18 10:10:10</small></div>
+			<div style="width: 300px; color: gray;">´´½¨Õß</div>
+			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${c.createBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${c.createTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 60px;">
-			<div style="width: 300px; color: gray;">ä¿®æ”¹è€…</div>
-			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>zhangsan&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">2017-01-19 10:10:10</small></div>
+			<div style="width: 300px; color: gray;">ÐÞ¸ÄÕß</div>
+			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${c.editBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${c.editTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 70px;">
-			<div style="width: 300px; color: gray;">æè¿°</div>
+			<div style="width: 300px; color: gray;">ÃèÊö</div>
 			<div style="width: 630px;position: relative; left: 200px; top: -20px;">
 				<b>
-					è¿™æ˜¯ä¸€æ¡çº¿ç´¢çš„æè¿°ä¿¡æ¯
+					${c.description}&nbsp;&nbsp;
 				</b>
 			</div>
 			<div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 80px;">
-			<div style="width: 300px; color: gray;">è”ç³»çºªè¦</div>
+			<div style="width: 300px; color: gray;">ÁªÏµ¼ÍÒª</div>
 			<div style="width: 630px;position: relative; left: 200px; top: -20px;">
 				<b>
-					è¿™æ¡çº¿ç´¢å³å°†è¢«è½¬æ¢
+					${c.contactSummary}&nbsp;&nbsp;
 				</b>
 			</div>
 			<div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 90px;">
-			<div style="width: 300px; color: gray;">ä¸‹æ¬¡è”ç³»æ—¶é—´</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>2017-05-01</b></div>
+			<div style="width: 300px; color: gray;">ÏÂ´ÎÁªÏµÊ±¼ä</div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${c.nextContactTime}&nbsp;&nbsp;</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -20px; "></div>
 		</div>
         <div style="position: relative; left: 40px; height: 30px; top: 100px;">
-            <div style="width: 300px; color: gray;">è¯¦ç»†åœ°å€</div>
+            <div style="width: 300px; color: gray;">ÏêÏ¸µØÖ·</div>
             <div style="width: 630px;position: relative; left: 200px; top: -20px;">
                 <b>
-                    åŒ—äº¬å¤§å…´å¤§æ—ä¼ä¸šæ¹¾
+                    ${c.address}&nbsp;&nbsp;
                 </b>
             </div>
             <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
         </div>
 	</div>
 	
-	<!-- å¤‡æ³¨ -->
+	<!-- ±¸×¢ -->
 	<div style="position: relative; top: 40px; left: 40px;">
 		<div class="page-header">
-			<h4>å¤‡æ³¨</h4>
+			<h4>±¸×¢</h4>
 		</div>
 		
-		<!-- å¤‡æ³¨1 -->
+		<!-- ±¸×¢1 -->
 		<div class="remarkDiv" style="height: 60px;">
-			<img title="zhangsan" src="../../image/user-thumbnail.png" style="width: 30px; height:30px;">
+			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 			<div style="position: relative; top: -40px; left: 40px;" >
-				<h5>å“Žå‘¦ï¼</h5>
-				<font color="gray">çº¿ç´¢</font> <font color="gray">-</font> <b>æŽå››å…ˆç”Ÿ-åŠ¨åŠ›èŠ‚ç‚¹</b> <small style="color: gray;"> 2017-01-22 10:10:10 ç”±zhangsan</small>
+				<h5>°¥ßÏ£¡</h5>
+				<font color="gray">ÏßË÷</font> <font color="gray">-</font> <b>ÀîËÄÏÈÉú-¶¯Á¦½Úµã</b> <small style="color: gray;"> 2017-01-22 10:10:10 ÓÉzhangsan</small>
 				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
 					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -388,12 +390,12 @@
 			</div>
 		</div>
 		
-		<!-- å¤‡æ³¨2 -->
+		<!-- ±¸×¢2 -->
 		<div class="remarkDiv" style="height: 60px;">
-			<img title="zhangsan" src="../../image/user-thumbnail.png" style="width: 30px; height:30px;">
+			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 			<div style="position: relative; top: -40px; left: 40px;" >
-				<h5>å‘µå‘µï¼</h5>
-				<font color="gray">çº¿ç´¢</font> <font color="gray">-</font> <b>æŽå››å…ˆç”Ÿ-åŠ¨åŠ›èŠ‚ç‚¹</b> <small style="color: gray;"> 2017-01-22 10:20:10 ç”±zhangsan</small>
+				<h5>ºÇºÇ£¡</h5>
+				<font color="gray">ÏßË÷</font> <font color="gray">-</font> <b>ÀîËÄÏÈÉú-¶¯Á¦½Úµã</b> <small style="color: gray;"> 2017-01-22 10:20:10 ÓÉzhangsan</small>
 				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
 					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -404,53 +406,53 @@
 		
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">
-				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="æ·»åŠ å¤‡æ³¨..."></textarea>
+				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="Ìí¼Ó±¸×¢..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
-					<button id="cancelBtn" type="button" class="btn btn-default">å–æ¶ˆ</button>
-					<button type="button" class="btn btn-primary">ä¿å­˜</button>
+					<button id="cancelBtn" type="button" class="btn btn-default">È¡Ïû</button>
+					<button type="button" class="btn btn-primary">±£´æ</button>
 				</p>
 			</form>
 		</div>
 	</div>
 	
-	<!-- å¸‚åœºæ´»åŠ¨ -->
+	<!-- ÊÐ³¡»î¶¯ -->
 	<div>
 		<div style="position: relative; top: 60px; left: 40px;">
 			<div class="page-header">
-				<h4>å¸‚åœºæ´»åŠ¨</h4>
+				<h4>ÊÐ³¡»î¶¯</h4>
 			</div>
 			<div style="position: relative;top: 0px;">
 				<table class="table table-hover" style="width: 900px;">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td>åç§°</td>
-							<td>å¼€å§‹æ—¥æœŸ</td>
-							<td>ç»“æŸæ—¥æœŸ</td>
-							<td>æ‰€æœ‰è€…</td>
+							<td>Ãû³Æ</td>
+							<td>¿ªÊ¼ÈÕÆÚ</td>
+							<td>½áÊøÈÕÆÚ</td>
+							<td>ËùÓÐÕß</td>
 							<td></td>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td>å‘ä¼ å•</td>
+							<td>·¢´«µ¥</td>
 							<td>2020-10-10</td>
 							<td>2020-10-20</td>
 							<td>zhangsan</td>
-							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>è§£é™¤å…³è”</a></td>
+							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>½â³ý¹ØÁª</a></td>
 						</tr>
 						<tr>
-							<td>å‘ä¼ å•</td>
+							<td>·¢´«µ¥</td>
 							<td>2020-10-10</td>
 							<td>2020-10-20</td>
 							<td>zhangsan</td>
-							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>è§£é™¤å…³è”</a></td>
+							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>½â³ý¹ØÁª</a></td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 			
 			<div>
-				<a href="javascript:void(0);" data-toggle="modal" data-target="#bundModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>å…³è”å¸‚åœºæ´»åŠ¨</a>
+				<a href="javascript:void(0);" data-toggle="modal" data-target="#bundModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>¹ØÁªÊÐ³¡»î¶¯</a>
 			</div>
 		</div>
 	</div>
