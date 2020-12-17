@@ -2,8 +2,11 @@ package com.xtn.service;
 
 import com.xtn.domain.Activity;
 import com.xtn.domain.Clue;
+import com.xtn.domain.ClueActivityRelation;
 import com.xtn.vo.PaginationVo;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,4 +23,10 @@ public interface ClueService {
 
     //根据id查询线索信息
     Clue selectClueById(String id);
+
+    //解除线索和市场活动的关联
+    boolean disconnectById(@Param("id") String id);
+
+    //关联线索和市场活动信息
+    boolean contactClueAndActivity(String clueId,String[] activityId);
 }

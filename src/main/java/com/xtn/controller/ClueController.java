@@ -1,7 +1,10 @@
 package com.xtn.controller;
 
+import com.xtn.domain.Activity;
 import com.xtn.domain.Clue;
+import com.xtn.domain.ClueActivityRelation;
 import com.xtn.domain.User;
+import com.xtn.service.ActivityService;
 import com.xtn.service.ClueService;
 import com.xtn.service.UserService;
 import com.xtn.utils.DateTimeUtil;
@@ -17,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +37,8 @@ public class ClueController {
     private UserService userService;
     @Resource
     private ClueService clueService;
+    @Resource
+    private ActivityService activityService;
 
     //获取用户信息
     @GetMapping(value = "/getUserList.do")
@@ -103,5 +109,45 @@ public class ClueController {
         mv.addObject("c",clue);
         mv.setViewName("/workbench/clue/detail.jsp");
         return mv;
+    }
+
+    //根据线索id获取相关市场活动信息
+    @GetMapping(value = "/activityListByClueId.do")
+    @ResponseBody
+    public Object activityListByClueId(String clueId){
+        List<Activity> aList = activityService.getActivityListByClueId(clueId);
+        return aList;
+    }
+
+    //解除线索和市场活动的关联
+    @PostMapping(value = "/disconnect.do")
+    @ResponseBody
+    public Object disconnect(String id){
+        boolean flag = false;
+        flag = clueService.disconnectById(id);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("success",flag);
+        return map;
+    }
+
+    //根据活动名name查询市场活动信息排除已关联的市场活动
+    @GetMapping(value = "/getActivityListByNameAndNotByClueId.do")
+    @ResponseBody
+    public Object getActivityListByNameAndNotByClueId(String name,String clueId){
+        List<Activity> aList = activityService.getActivityListByNameAndNotByClueId(name,clueId);
+        return aList;
+    }
+
+    //关联线索和市场活动信息
+    @PostMapping(value = "/contactClueAndActivity.do")
+    @ResponseBody
+    public Object contactClueAndActivity(String clueId,String[] activityId){
+        boolean flag = false;
+        flag = clueService.contactClueAndActivity(clueId, activityId);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("success",flag);
+        return map;
     }
 }

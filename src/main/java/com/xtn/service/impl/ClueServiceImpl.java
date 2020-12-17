@@ -2,13 +2,21 @@ package com.xtn.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.xtn.dao.ActivityDao;
 import com.xtn.dao.ClueDao;
+import com.xtn.dao.ContactsActivityRelationDao;
+import com.xtn.domain.Activity;
 import com.xtn.domain.Clue;
+import com.xtn.domain.ClueActivityRelation;
+import com.xtn.exception.TransactionException;
 import com.xtn.service.ClueService;
+import com.xtn.utils.UUIDUtil;
 import com.xtn.vo.PaginationVo;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +29,10 @@ public class ClueServiceImpl implements ClueService {
 
     @Resource
     private ClueDao clueDao;
+    @Resource
+    private ActivityDao activityDao;
+    @Resource
+    private ContactsActivityRelationDao contactsActivityRelationDao;
 
     //分页查询线索信息
     @Override
@@ -57,4 +69,40 @@ public class ClueServiceImpl implements ClueService {
     public Clue selectClueById(String id) {
         return clueDao.selectClueById(id);
     }
+
+    //解除线索和市场活动的关联
+    @Override
+    public boolean disconnectById(String id) {
+        boolean flag = false;
+        int count = clueDao.disconnectById(id);
+        if (count == 1){
+            flag = true;
+        }
+        return flag;
+    }
+
+    //关联线索和市场活动信息
+    @Override
+    public boolean contactClueAndActivity(String clueId,String[] activityId) {
+        boolean flag = false;
+        for (int i = 0; i < activityId.length; i++) {
+            String id = UUIDUtil.getUUID();
+            //创建线索活动关联对象
+            ClueActivityRelation car = new ClueActivityRelation();
+            //添加id
+            car.setId(id);
+            //添加市场活动id
+            car.setActivityId(activityId[i]);
+            //添加线索id
+            car.setClueId(clueId);
+            int count = contactsActivityRelationDao.contactClueAndActivity(car);
+            if (count == 1){
+                flag = true;
+            }else {
+                throw new TransactionException("关联的市场活动信息数错误");
+            }
+        }
+        return flag;
+    }
+
 }

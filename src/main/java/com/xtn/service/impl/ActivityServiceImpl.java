@@ -144,4 +144,16 @@ public class ActivityServiceImpl implements ActivityService {
         }
         return flag;
     }
+
+    //根据线索id获取相关市场活动信息
+    @Override
+    public List<Activity> getActivityListByClueId(String clueId) {
+        return activityDao.getActivityListByClueId(clueId);
+    }
+
+    //根据活动名name查询市场活动信息排除已关联的市场活动
+    @Override
+    public List<Activity> getActivityListByNameAndNotByClueId(String name,String clueId) {
+        return activityDao.getActivityListByNameAndNotByClueId(name, clueId);
+    }
 }

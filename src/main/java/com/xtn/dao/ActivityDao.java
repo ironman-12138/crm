@@ -27,4 +27,9 @@ public interface ActivityDao {
     //根据id查询市场活动信息(owner为user的name)
     public Activity detail(String id);
 
+    //根据线索id获取相关市场活动信息
+    List<Activity> getActivityListByClueId(@Param("clueId") String clueId);
+
+    //根据活动名name查询市场活动信息排除已关联的市场活动
+    List<Activity> getActivityListByNameAndNotByClueId(@Param("name") String name,@Param("clueId") String clueId);
 }

@@ -25,7 +25,7 @@
         select a.id,a.name,u.name as owner,a.startDate,a.endDate
         from tbl_activity a
         join tbl_user u
-        on a.owner = u.id
+        on a.owner=u.id
         <where>
             <if test="owner != null and owner != ''">
                 u.name like '%' #{owner} '%'
@@ -55,7 +55,7 @@
     <select id="selectUserActivity" resultType="com.xtn.domain.Activity">
         select id,owner,name,startDate,endDate,cost,description
         from tbl_activity
-        where id = #{id}
+        where id=#{id}
     </select>
 
     <update id="updateUserActivity">
@@ -75,7 +75,30 @@
         select a.id,u.name as owner,a.name,a.startDate,a.endDate,a.cost,a.description,a.createTime,a.createBy,a.editTime,a.editBy
         from tbl_activity a
         join tbl_user u
-        on a.owner = u.id
-        where a.id = #{id}
+        on a.owner=u.id
+        where a.id=#{id}
+    </select>
+
+    <select id="getActivityListByClueId" resultType="com.xtn.domain.Activity">
+        select c.id,a.name,a.startDate,a.endDate,u.name as owner
+        from tbl_clue_activity_relation c
+        join tbl_activity a
+        on c.activityId=a.id
+        join tbl_user u
+        on a.owner=u.id
+        where c.clueId=#{clueId}
+    </select>
+
+    <select id="getActivityListByNameAndNotByClueId" resultType="com.xtn.domain.Activity">
+        select a.id,a.name,a.startDate,a.endDate,u.name as owner
+        from tbl_activity a
+        join tbl_user u
+        on a.owner=u.id
+        where a.name like '%' #{name} '%'
+        and a.id not in(
+            select activityId
+            from tbl_clue_activity_relation
+            where clueId=#{clueId}
+        )
     </select>
 </mapper>

@@ -1,9 +1,11 @@
 package com.xtn.dao;
 
 import com.xtn.domain.Clue;
+import com.xtn.domain.ClueActivityRelation;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ClueDao {
 
@@ -15,4 +17,8 @@ public interface ClueDao {
 
     //根据id查询线索信息
     Clue selectClueById(@Param("id") String id);
+
+    //解除线索和市场活动的关联
+    int disconnectById(@Param("id") String id);
+
 }

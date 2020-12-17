@@ -1,34 +1,37 @@
-<%@page pageEncoding="GB18030"%>
+<%@page pageEncoding="UTF-8"%>
+<%
+String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() +"/";
+%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-	<!--base±ê¼Ç£¬Ö»¶Ô¸ÃÒ³ÃæËùÓĞÏà¶ÔÂ·¾¶Æğ×÷ÓÃ-->
-	<base href="http://127.0.0.1:8080/myWeb/">
+	<!--baseæ ‡è®°ï¼Œåªå¯¹è¯¥é¡µé¢æ‰€æœ‰ç›¸å¯¹è·¯å¾„èµ·ä½œç”¨-->
+	<base href="<%=basePath%>">
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
 
-	//Ä¬ÈÏÇé¿öÏÂÈ¡ÏûºÍ±£´æ°´Å¥ÊÇÒş²ØµÄ
+	//é»˜è®¤æƒ…å†µä¸‹å–æ¶ˆå’Œä¿å­˜æŒ‰é’®æ˜¯éšè—çš„
 	var cancelAndSaveBtnDefault = true;
 	
 	$(function(){
 		$("#remark").focus(function(){
 			if(cancelAndSaveBtnDefault){
-				//ÉèÖÃremarkDivµÄ¸ß¶ÈÎª130px
+				//è®¾ç½®remarkDivçš„é«˜åº¦ä¸º130px
 				$("#remarkDiv").css("height","130px");
-				//ÏÔÊ¾
+				//æ˜¾ç¤º
 				$("#cancelAndSaveBtn").show("2000");
 				cancelAndSaveBtnDefault = false;
 			}
 		});
 		
 		$("#cancelBtn").click(function(){
-			//ÏÔÊ¾
+			//æ˜¾ç¤º
 			$("#cancelAndSaveBtn").hide();
-			//ÉèÖÃremarkDivµÄ¸ß¶ÈÎª130px
+			//è®¾ç½®remarkDivçš„é«˜åº¦ä¸º130px
 			$("#remarkDiv").css("height","90px");
 			cancelAndSaveBtnDefault = true;
 		});
@@ -48,28 +51,167 @@
 		$(".myHref").mouseout(function(){
 			$(this).children("span").css("color","#E6E6E6");
 		});
+
+
+		/*åˆ·æ–°å…³è”çš„å¸‚åœºæ´»åŠ¨åˆ—è¡¨*/
+		refreshContact();
+
+
+		/*ä¸ºå…³è”å¸‚åœºæ´»åŠ¨æ¨¡æ€çª—å£ä¸­çš„æœç´¢æ¡†ç»‘å®šäº‹ä»¶ï¼Œæ‰§è¡ŒæŒ‰ä¸‹å›è½¦é”®æœç´¢*/
+		$("#search-activity").keydown(function (event) {
+			if (event.keyCode == 13){
+				$.ajax({
+					url:"clue/getActivityListByNameAndNotByClueId.do",
+					data:{"name":$("#search-activity").val(),"clueId":"${c.id}"},
+					dataType:"json",
+					success:function (data) {
+						//data:[{å¸‚åœºæ´»åŠ¨1},{å¸‚åœºæ´»åŠ¨2},...]
+						var html = "";
+						$.each(data,function (i,n) {
+							html += '<tr>';
+							html += '<td><input type="checkbox" name="activityId" value="' + n.id + '"/></td>';
+							html += '<td>' + n.name + '</td>';
+							html += '<td>' + n.startDate + '</td>';
+							html += '<td>' + n.endDate + '</td>';
+							html += '<td>' + n.owner + '</td>';
+							html += '</tr>';
+						})
+
+						$("#activityBody2").html(html);
+					}
+				})
+				//ç¦ç”¨æ¨¡æ€çª—å£æŒ‰å›è½¦åˆ·æ–°åŠŸèƒ½
+				return false;
+			}
+		})
+
+
+		/*ä¸ºå…¨é€‰æ¡†ç»‘å®šäº‹ä»¶*/
+		$("#selectAll").on("click",function () {
+			$("input[name=activityId]").prop("checked",this.checked);
+		})
+
+
+		/*
+		* ä¸ºåŠ¨æ€ç”Ÿæˆçš„æŒ‰é’®ç»‘å®šäº‹ä»¶,è¦ç”¨onæ–¹æ³•ï¼Œå–æœ‰æ•ˆçš„å¤–å±‚å…ƒç´ 
+		* è¯­æ³•ï¼š$(æœ‰æ•ˆçš„å¤–å±‚å…ƒç´ ).on(ç»‘å®šäº‹ä»¶çš„æ–¹å¼,éœ€è¦ç»‘å®šäº‹ä»¶å…ƒç´ å¯¹è±¡,å›è°ƒå‡½æ•°)
+		* */
+		$("#activityBody2").on("click",$("input[name=activityId]"),function () {
+			//å½“æ‰€æœ‰å…ƒç´ çš„å¤é€‰æ¡†éƒ½é€‰ä¸­ï¼Œå…¨é€‰æ¡†å°±é€‰ä¸­
+			$("#selectAll").prop("checked",$("input[name=activityId]").length == $("input[name=activityId]:checked").length);
+		})
+
+
+		/*ä¸ºå…³è”æŒ‰é’®ç»‘å®šäº‹ä»¶ï¼Œæ‰§è¡Œå…³è”æ“ä½œ*/
+		$("#saveBtn").on("click",function () {
+			//è·å–å¤é€‰æ¡†é€‰ä¸­çš„å…ƒç´ å¯¹è±¡
+			var $fx = $("input[name=activityId]:checked");
+			if ($fx.length == 0){
+
+				alert("è¯·é€‰ä¸­è¦å…³è”çš„é€‰é¡¹");
+
+			}else {
+
+				var html = "clueId=${c.id}&";
+				//è·å–å¤é€‰æ¡†é€‰ä¸­çš„å…ƒç´ idå€¼ï¼Œæ‹¼æ¥æˆå­—ç¬¦ä¸²ï¼ˆactivityId=...&activityId=...ï¼‰
+				for (var i = 0; i < $fx.length; i++){
+					html += "activityId=" + $($fx[i]).val();
+					if (i < $fx.length - 1){
+						//åœ¨ä¸æ˜¯æœ€åä¸€ä¸ªå…ƒç´ çš„åé¢+&
+						html += "&";
+					}
+				}
+
+				$.ajax({
+					url:"clue/contactClueAndActivity.do",
+					data:html,
+					dataType:"json",
+					success:function(data){
+						//data:{"success":true/false}
+						if (data.success){
+							alert("å…³è”æˆåŠŸ");
+							//åˆ·æ–°åˆ—è¡¨
+							refreshContact();
+							//æ¸…é™¤æœç´¢æ¡†ä¸­çš„å†…å®¹ã€å¤é€‰æ¡†çš„âˆšã€activityBody2ä¸­çš„å†…å®¹
+							$("#search-activity").val("");
+							$("#selectAll").prop("checked",false);
+							$("#activityBody2").val("");
+							//å…³é—­æ¨¡æ€çª—å£
+							$("#bundModal").modal("hide");
+						}
+					},
+					type:"post"
+				})
+
+			}
+		})
 	});
+
+
+	/*åˆ·æ–°å…³è”çš„å¸‚åœºæ´»åŠ¨åˆ—è¡¨*/
+	function refreshContact() {
+		$.ajax({
+			url:"clue/activityListByClueId.do",
+			data:{"clueId":"${c.id}"},
+			dataType:"json",
+			success:function (data) {
+				//data:[{å¸‚åœºæ´»åŠ¨1},{å¸‚åœºæ´»åŠ¨2},...]
+				var html = "";
+				$.each(data,function (i,n) {
+					html += '<tr>';
+					html += '<td>' + n.name + '</td>';
+					html += '<td>' + n.startDate + '</td>';
+					html += '<td>' + n.endDate + '</td>';
+					html += '<td>' + n.owner + '</td>';
+					html += '<td><a href="javascript:void(0);" onclick="unbond(\'' + n.id + '\')"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>è§£é™¤å…³è”</a></td>';
+					html += '</tr>';
+				})
+
+				$("#activityBody").html(html);
+			}
+		})
+	}
+
+
+	/*è§£é™¤çº¿ç´¢å’Œå¸‚åœºæ´»åŠ¨çš„å…³è”*/
+	function unbond(acId) {
+		$.ajax({
+			url:"clue/disconnect.do",
+			data:{"id":acId},
+			dataType: "json",
+			type:"post",
+			success:function (data) {
+				//data:{"success":true/false}
+				if (data.success){
+					//åˆ·æ–°åˆ—è¡¨
+					refreshContact();
+				}else {
+					alert("è§£é™¤å…³è”å¤±è´¥");
+				}
+			}
+		})
+	}
 	
 </script>
 
 </head>
 <body>
 
-	<!-- ¹ØÁªÊĞ³¡»î¶¯µÄÄ£Ì¬´°¿Ú -->
+	<!-- å…³è”å¸‚åœºæ´»åŠ¨çš„æ¨¡æ€çª—å£ -->
 	<div class="modal fade" id="bundModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 80%;">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">
-						<span aria-hidden="true">¡Á</span>
+						<span aria-hidden="true">Ã—</span>
 					</button>
-					<h4 class="modal-title">¹ØÁªÊĞ³¡»î¶¯</h4>
+					<h4 class="modal-title">å…³è”å¸‚åœºæ´»åŠ¨</h4>
 				</div>
 				<div class="modal-body">
 					<div class="btn-group" style="position: relative; top: 18%; left: 8px;">
 						<form class="form-inline" role="form">
 						  <div class="form-group has-feedback">
-						    <input type="text" class="form-control" style="width: 300px;" placeholder="ÇëÊäÈëÊĞ³¡»î¶¯Ãû³Æ£¬Ö§³ÖÄ£ºı²éÑ¯">
+						    <input type="text" id="search-activity" class="form-control" style="width: 300px;" placeholder="è¯·è¾“å…¥å¸‚åœºæ´»åŠ¨åç§°ï¼Œæ”¯æŒæ¨¡ç³ŠæŸ¥è¯¢">
 						    <span class="glyphicon glyphicon-search form-control-feedback"></span>
 						  </div>
 						</form>
@@ -77,55 +219,48 @@
 					<table id="activityTable" class="table table-hover" style="width: 900px; position: relative;top: 10px;">
 						<thead>
 							<tr style="color: #B3B3B3;">
-								<td><input type="checkbox"/></td>
-								<td>Ãû³Æ</td>
-								<td>¿ªÊ¼ÈÕÆÚ</td>
-								<td>½áÊøÈÕÆÚ</td>
-								<td>ËùÓĞÕß</td>
+								<td><input type="checkbox" id="selectAll"/></td>
+								<td>åç§°</td>
+								<td>å¼€å§‹æ—¥æœŸ</td>
+								<td>ç»“æŸæ—¥æœŸ</td>
+								<td>æ‰€æœ‰è€…</td>
 								<td></td>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
+						<tbody id="activityBody2">
+							<%--<tr>
 								<td><input type="checkbox"/></td>
-								<td>·¢´«µ¥</td>
+								<td>å‘ä¼ å•</td>
 								<td>2020-10-10</td>
 								<td>2020-10-20</td>
 								<td>zhangsan</td>
-							</tr>
-							<tr>
-								<td><input type="checkbox"/></td>
-								<td>·¢´«µ¥</td>
-								<td>2020-10-10</td>
-								<td>2020-10-20</td>
-								<td>zhangsan</td>
-							</tr>
+							</tr>--%>
 						</tbody>
 					</table>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">È¡Ïû</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">¹ØÁª</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">å–æ¶ˆ</button>
+					<button type="button" id="saveBtn">å…³è”</button>
 				</div>
 			</div>
 		</div>
 	</div>
 
-    <!-- ĞŞ¸ÄÏßË÷µÄÄ£Ì¬´°¿Ú -->
+    <!-- ä¿®æ”¹çº¿ç´¢çš„æ¨¡æ€çª—å£ -->
     <div class="modal fade" id="editClueModal" role="dialog">
         <div class="modal-dialog" role="document" style="width: 90%;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">¡Á</span>
+                        <span aria-hidden="true">Ã—</span>
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">ĞŞ¸ÄÏßË÷</h4>
+                    <h4 class="modal-title" id="myModalLabel">ä¿®æ”¹çº¿ç´¢</h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" role="form">
 
                         <div class="form-group">
-                            <label for="edit-clueOwner" class="col-sm-2 control-label">ËùÓĞÕß<span style="font-size: 15px; color: red;">*</span></label>
+                            <label for="edit-clueOwner" class="col-sm-2 control-label">æ‰€æœ‰è€…<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="edit-clueOwner">
                                     <option>zhangsan</option>
@@ -133,99 +268,99 @@
                                     <option>wangwu</option>
                                 </select>
                             </div>
-                            <label for="edit-company" class="col-sm-2 control-label">¹«Ë¾<span style="font-size: 15px; color: red;">*</span></label>
+                            <label for="edit-company" class="col-sm-2 control-label">å…¬å¸<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-company" value="¶¯Á¦½Úµã">
+                                <input type="text" class="form-control" id="edit-company" value="åŠ¨åŠ›èŠ‚ç‚¹">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="edit-call" class="col-sm-2 control-label">³Æºô</label>
+                            <label for="edit-call" class="col-sm-2 control-label">ç§°å‘¼</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="edit-call">
                                     <option></option>
-                                    <option selected>ÏÈÉú</option>
-                                    <option>·òÈË</option>
-                                    <option>Å®Ê¿</option>
-                                    <option>²©Ê¿</option>
-                                    <option>½ÌÊÚ</option>
+                                    <option selected>å…ˆç”Ÿ</option>
+                                    <option>å¤«äºº</option>
+                                    <option>å¥³å£«</option>
+                                    <option>åšå£«</option>
+                                    <option>æ•™æˆ</option>
                                 </select>
                             </div>
-                            <label for="edit-surname" class="col-sm-2 control-label">ĞÕÃû<span style="font-size: 15px; color: red;">*</span></label>
+                            <label for="edit-surname" class="col-sm-2 control-label">å§“å<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-surname" value="ÀîËÄ">
+                                <input type="text" class="form-control" id="edit-surname" value="æå››">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="edit-job" class="col-sm-2 control-label">Ö°Î»</label>
+                            <label for="edit-job" class="col-sm-2 control-label">èŒä½</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="edit-job" value="CTO">
                             </div>
-                            <label for="edit-email" class="col-sm-2 control-label">ÓÊÏä</label>
+                            <label for="edit-email" class="col-sm-2 control-label">é‚®ç®±</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="edit-email" value="lisi@bjpowernode.com">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="edit-phone" class="col-sm-2 control-label">¹«Ë¾×ù»ú</label>
+                            <label for="edit-phone" class="col-sm-2 control-label">å…¬å¸åº§æœº</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="edit-phone" value="010-84846003">
                             </div>
-                            <label for="edit-website" class="col-sm-2 control-label">¹«Ë¾ÍøÕ¾</label>
+                            <label for="edit-website" class="col-sm-2 control-label">å…¬å¸ç½‘ç«™</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="edit-website" value="http://www.bjpowernode.com">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="edit-mphone" class="col-sm-2 control-label">ÊÖ»ú</label>
+                            <label for="edit-mphone" class="col-sm-2 control-label">æ‰‹æœº</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="edit-mphone" value="12345678901">
                             </div>
-                            <label for="edit-status" class="col-sm-2 control-label">ÏßË÷×´Ì¬</label>
+                            <label for="edit-status" class="col-sm-2 control-label">çº¿ç´¢çŠ¶æ€</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="edit-status">
                                     <option></option>
-                                    <option>ÊÔÍ¼ÁªÏµ</option>
-                                    <option>½«À´ÁªÏµ</option>
-                                    <option selected>ÒÑÁªÏµ</option>
-                                    <option>Ğé¼ÙÏßË÷</option>
-                                    <option>¶ªÊ§ÏßË÷</option>
-                                    <option>Î´ÁªÏµ</option>
-                                    <option>ĞèÒªÌõ¼ş</option>
+                                    <option>è¯•å›¾è”ç³»</option>
+                                    <option>å°†æ¥è”ç³»</option>
+                                    <option selected>å·²è”ç³»</option>
+                                    <option>è™šå‡çº¿ç´¢</option>
+                                    <option>ä¸¢å¤±çº¿ç´¢</option>
+                                    <option>æœªè”ç³»</option>
+                                    <option>éœ€è¦æ¡ä»¶</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="edit-source" class="col-sm-2 control-label">ÏßË÷À´Ô´</label>
+                            <label for="edit-source" class="col-sm-2 control-label">çº¿ç´¢æ¥æº</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="edit-source">
                                     <option></option>
-                                    <option selected>¹ã¸æ</option>
-                                    <option>ÍÆÏúµç»°</option>
-                                    <option>Ô±¹¤½éÉÜ</option>
-                                    <option>Íâ²¿½éÉÜ</option>
-                                    <option>ÔÚÏßÉÌ³¡</option>
-                                    <option>ºÏ×÷»ï°é</option>
-                                    <option>¹«¿ªÃ½½é</option>
-                                    <option>ÏúÊÛÓÊ¼ş</option>
-                                    <option>ºÏ×÷»ï°éÑĞÌÖ»á</option>
-                                    <option>ÄÚ²¿ÑĞÌÖ»á</option>
-                                    <option>½»Ò×»á</option>
-                                    <option>webÏÂÔØ</option>
-                                    <option>webµ÷ÑĞ</option>
-                                    <option>ÁÄÌì</option>
+                                    <option selected>å¹¿å‘Š</option>
+                                    <option>æ¨é”€ç”µè¯</option>
+                                    <option>å‘˜å·¥ä»‹ç»</option>
+                                    <option>å¤–éƒ¨ä»‹ç»</option>
+                                    <option>åœ¨çº¿å•†åœº</option>
+                                    <option>åˆä½œä¼™ä¼´</option>
+                                    <option>å…¬å¼€åª’ä»‹</option>
+                                    <option>é”€å”®é‚®ä»¶</option>
+                                    <option>åˆä½œä¼™ä¼´ç ”è®¨ä¼š</option>
+                                    <option>å†…éƒ¨ç ”è®¨ä¼š</option>
+                                    <option>äº¤æ˜“ä¼š</option>
+                                    <option>webä¸‹è½½</option>
+                                    <option>webè°ƒç ”</option>
+                                    <option>èŠå¤©</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="edit-describe" class="col-sm-2 control-label">ÃèÊö</label>
+                            <label for="edit-describe" class="col-sm-2 control-label">æè¿°</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="3" id="edit-describe">ÕâÊÇÒ»ÌõÏßË÷µÄÃèÊöĞÅÏ¢</textarea>
+                                <textarea class="form-control" rows="3" id="edit-describe">è¿™æ˜¯ä¸€æ¡çº¿ç´¢çš„æè¿°ä¿¡æ¯</textarea>
                             </div>
                         </div>
 
@@ -233,13 +368,13 @@
 
                         <div style="position: relative;top: 15px;">
                             <div class="form-group">
-                                <label for="edit-contactSummary" class="col-sm-2 control-label">ÁªÏµ¼ÍÒª</label>
+                                <label for="edit-contactSummary" class="col-sm-2 control-label">è”ç³»çºªè¦</label>
                                 <div class="col-sm-10" style="width: 81%;">
-                                    <textarea class="form-control" rows="3" id="edit-contactSummary">Õâ¸öÏßË÷¼´½«±»×ª»»</textarea>
+                                    <textarea class="form-control" rows="3" id="edit-contactSummary">è¿™ä¸ªçº¿ç´¢å³å°†è¢«è½¬æ¢</textarea>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="edit-nextContactTime" class="col-sm-2 control-label">ÏÂ´ÎÁªÏµÊ±¼ä</label>
+                                <label for="edit-nextContactTime" class="col-sm-2 control-label">ä¸‹æ¬¡è”ç³»æ—¶é—´</label>
                                 <div class="col-sm-10" style="width: 300px;">
                                     <input type="text" class="form-control" id="edit-nextContactTime" value="2017-05-01">
                                 </div>
@@ -250,9 +385,9 @@
 
                         <div style="position: relative;top: 20px;">
                             <div class="form-group">
-                                <label for="edit-address" class="col-sm-2 control-label">ÏêÏ¸µØÖ·</label>
+                                <label for="edit-address" class="col-sm-2 control-label">è¯¦ç»†åœ°å€</label>
                                 <div class="col-sm-10" style="width: 81%;">
-                                    <textarea class="form-control" rows="1" id="edit-address">±±¾©´óĞËÇø´ó×åÆóÒµÍå</textarea>
+                                    <textarea class="form-control" rows="1" id="edit-address">åŒ—äº¬å¤§å…´åŒºå¤§æ—ä¼ä¸šæ¹¾</textarea>
                                 </div>
                             </div>
                         </div>
@@ -260,84 +395,84 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">¹Ø±Õ</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">¸üĞÂ</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">å…³é—­</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">æ›´æ–°</button>
                 </div>
             </div>
         </div>
     </div>
 
-	<!-- ·µ»Ø°´Å¥ -->
+	<!-- è¿”å›æŒ‰é’® -->
 	<div style="position: relative; top: 35px; left: 10px;">
 		<a href="javascript:void(0);" onclick="window.history.back();"><span class="glyphicon glyphicon-arrow-left" style="font-size: 20px; color: #DDDDDD"></span></a>
 	</div>
 	
-	<!-- ´ó±êÌâ -->
+	<!-- å¤§æ ‡é¢˜ -->
 	<div style="position: relative; left: 40px; top: -30px;">
 		<div class="page-header">
 			<h3>${c.fullname}${c.appellation} <small>${c.company}</small></h3>
 		</div>
 		<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
-			<button type="button" class="btn btn-default" onclick="window.location.href='workbench/clue/convert.html';"><span class="glyphicon glyphicon-retweet"></span> ×ª»»</button>
-			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-edit"></span> ±à¼­</button>
-			<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> É¾³ı</button>
+			<button type="button" class="btn btn-default" onclick="window.location.href='workbench/clue/convert.html?id=${c.id}&fullname=${c.fullname}&appellation=${c.appellation}&company=${c.company}&owner=${c.owner}';"><span class="glyphicon glyphicon-retweet"></span> è½¬æ¢</button>
+			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-edit"></span> ç¼–è¾‘</button>
+			<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> åˆ é™¤</button>
 		</div>
 	</div>
 	
-	<!-- ÏêÏ¸ĞÅÏ¢ -->
+	<!-- è¯¦ç»†ä¿¡æ¯ -->
 	<div style="position: relative; top: -70px;">
 		<div style="position: relative; left: 40px; height: 30px;">
-			<div style="width: 300px; color: gray;">Ãû³Æ</div>
+			<div style="width: 300px; color: gray;">åç§°</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${c.fullname}${c.appellation}</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">ËùÓĞÕß</div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">æ‰€æœ‰è€…</div>
 			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${c.owner}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 10px;">
-			<div style="width: 300px; color: gray;">¹«Ë¾</div>
+			<div style="width: 300px; color: gray;">å…¬å¸</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${c.company}</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">Ö°Î»</div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">èŒä½</div>
 			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${c.job}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 20px;">
-			<div style="width: 300px; color: gray;">ÓÊÏä</div>
+			<div style="width: 300px; color: gray;">é‚®ç®±</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${c.email}</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">¹«Ë¾×ù»ú</div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">å…¬å¸åº§æœº</div>
 			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${c.phone}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 30px;">
-			<div style="width: 300px; color: gray;">¹«Ë¾ÍøÕ¾</div>
+			<div style="width: 300px; color: gray;">å…¬å¸ç½‘ç«™</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${c.website}</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">ÊÖ»ú</div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">æ‰‹æœº</div>
 			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${c.mphone}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 40px;">
-			<div style="width: 300px; color: gray;">ÏßË÷×´Ì¬</div>
+			<div style="width: 300px; color: gray;">çº¿ç´¢çŠ¶æ€</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${c.state}</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">ÏßË÷À´Ô´</div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">çº¿ç´¢æ¥æº</div>
 			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${c.source}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 50px;">
-			<div style="width: 300px; color: gray;">´´½¨Õß</div>
+			<div style="width: 300px; color: gray;">åˆ›å»ºè€…</div>
 			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${c.createBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${c.createTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 60px;">
-			<div style="width: 300px; color: gray;">ĞŞ¸ÄÕß</div>
+			<div style="width: 300px; color: gray;">ä¿®æ”¹è€…</div>
 			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${c.editBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${c.editTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 70px;">
-			<div style="width: 300px; color: gray;">ÃèÊö</div>
+			<div style="width: 300px; color: gray;">æè¿°</div>
 			<div style="width: 630px;position: relative; left: 200px; top: -20px;">
 				<b>
 					${c.description}&nbsp;&nbsp;
@@ -346,7 +481,7 @@
 			<div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 80px;">
-			<div style="width: 300px; color: gray;">ÁªÏµ¼ÍÒª</div>
+			<div style="width: 300px; color: gray;">è”ç³»çºªè¦</div>
 			<div style="width: 630px;position: relative; left: 200px; top: -20px;">
 				<b>
 					${c.contactSummary}&nbsp;&nbsp;
@@ -355,12 +490,12 @@
 			<div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 90px;">
-			<div style="width: 300px; color: gray;">ÏÂ´ÎÁªÏµÊ±¼ä</div>
+			<div style="width: 300px; color: gray;">ä¸‹æ¬¡è”ç³»æ—¶é—´</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${c.nextContactTime}&nbsp;&nbsp;</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -20px; "></div>
 		</div>
         <div style="position: relative; left: 40px; height: 30px; top: 100px;">
-            <div style="width: 300px; color: gray;">ÏêÏ¸µØÖ·</div>
+            <div style="width: 300px; color: gray;">è¯¦ç»†åœ°å€</div>
             <div style="width: 630px;position: relative; left: 200px; top: -20px;">
                 <b>
                     ${c.address}&nbsp;&nbsp;
@@ -370,18 +505,18 @@
         </div>
 	</div>
 	
-	<!-- ±¸×¢ -->
+	<!-- å¤‡æ³¨ -->
 	<div style="position: relative; top: 40px; left: 40px;">
 		<div class="page-header">
-			<h4>±¸×¢</h4>
+			<h4>å¤‡æ³¨</h4>
 		</div>
 		
-		<!-- ±¸×¢1 -->
+		<!-- å¤‡æ³¨1 -->
 		<div class="remarkDiv" style="height: 60px;">
 			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 			<div style="position: relative; top: -40px; left: 40px;" >
-				<h5>°¥ßÏ£¡</h5>
-				<font color="gray">ÏßË÷</font> <font color="gray">-</font> <b>ÀîËÄÏÈÉú-¶¯Á¦½Úµã</b> <small style="color: gray;"> 2017-01-22 10:10:10 ÓÉzhangsan</small>
+				<h5>å“å‘¦ï¼</h5>
+				<font color="gray">çº¿ç´¢</font> <font color="gray">-</font> <b>æå››å…ˆç”Ÿ-åŠ¨åŠ›èŠ‚ç‚¹</b> <small style="color: gray;"> 2017-01-22 10:10:10 ç”±zhangsan</small>
 				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
 					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -390,12 +525,12 @@
 			</div>
 		</div>
 		
-		<!-- ±¸×¢2 -->
+		<!-- å¤‡æ³¨2 -->
 		<div class="remarkDiv" style="height: 60px;">
 			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 			<div style="position: relative; top: -40px; left: 40px;" >
-				<h5>ºÇºÇ£¡</h5>
-				<font color="gray">ÏßË÷</font> <font color="gray">-</font> <b>ÀîËÄÏÈÉú-¶¯Á¦½Úµã</b> <small style="color: gray;"> 2017-01-22 10:20:10 ÓÉzhangsan</small>
+				<h5>å‘µå‘µï¼</h5>
+				<font color="gray">çº¿ç´¢</font> <font color="gray">-</font> <b>æå››å…ˆç”Ÿ-åŠ¨åŠ›èŠ‚ç‚¹</b> <small style="color: gray;"> 2017-01-22 10:20:10 ç”±zhangsan</small>
 				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
 					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -406,53 +541,46 @@
 		
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">
-				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="Ìí¼Ó±¸×¢..."></textarea>
+				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="æ·»åŠ å¤‡æ³¨..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
-					<button id="cancelBtn" type="button" class="btn btn-default">È¡Ïû</button>
-					<button type="button" class="btn btn-primary">±£´æ</button>
+					<button id="cancelBtn" type="button" class="btn btn-default">å–æ¶ˆ</button>
+					<button type="button" class="btn btn-primary">ä¿å­˜</button>
 				</p>
 			</form>
 		</div>
 	</div>
 	
-	<!-- ÊĞ³¡»î¶¯ -->
+	<!-- å¸‚åœºæ´»åŠ¨ -->
 	<div>
 		<div style="position: relative; top: 60px; left: 40px;">
 			<div class="page-header">
-				<h4>ÊĞ³¡»î¶¯</h4>
+				<h4>å¸‚åœºæ´»åŠ¨</h4>
 			</div>
 			<div style="position: relative;top: 0px;">
 				<table class="table table-hover" style="width: 900px;">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td>Ãû³Æ</td>
-							<td>¿ªÊ¼ÈÕÆÚ</td>
-							<td>½áÊøÈÕÆÚ</td>
-							<td>ËùÓĞÕß</td>
+							<td>åç§°</td>
+							<td>å¼€å§‹æ—¥æœŸ</td>
+							<td>ç»“æŸæ—¥æœŸ</td>
+							<td>æ‰€æœ‰è€…</td>
 							<td></td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td>·¢´«µ¥</td>
+					<tbody id="activityBody">
+						<%--<tr>
+							<td>å‘ä¼ å•</td>
 							<td>2020-10-10</td>
 							<td>2020-10-20</td>
 							<td>zhangsan</td>
-							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>½â³ı¹ØÁª</a></td>
-						</tr>
-						<tr>
-							<td>·¢´«µ¥</td>
-							<td>2020-10-10</td>
-							<td>2020-10-20</td>
-							<td>zhangsan</td>
-							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>½â³ı¹ØÁª</a></td>
-						</tr>
+							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>è§£é™¤å…³è”</a></td>
+						</tr>--%>
 					</tbody>
 				</table>
 			</div>
 			
 			<div>
-				<a href="javascript:void(0);" data-toggle="modal" data-target="#bundModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>¹ØÁªÊĞ³¡»î¶¯</a>
+				<a href="javascript:void(0);" data-toggle="modal" data-target="#bundModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>å…³è”å¸‚åœºæ´»åŠ¨</a>
 			</div>
 		</div>
 	</div>

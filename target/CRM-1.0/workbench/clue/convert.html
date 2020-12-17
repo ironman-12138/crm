@@ -15,6 +15,24 @@
 
 <script type="text/javascript">
 	$(function(){
+		//接收detail页面传来的id值
+		var values = GetRequest();
+
+		/*Request = GetRequest();
+		var 参数1,参数2,参数3,参数N;
+		参数1 = Request[''参数1''];
+		参数2 = Request[''参数2''];
+		参数3 = Request[''参数3''];
+		参数N = Request[''参数N''];*/
+		/*alert(values["id"]);
+		alert(values["fullname"]);*/
+		//向页面填充数据
+		$("#titleName").html(values["fullname"] + values["appellation"] + "-" + values["company"]);
+		$("#create-customer").html("新建客户：" + values["company"]);
+		$("#create-contact").html("新建联系人：" + values["fullname"]);
+		$("#ownerName").html(values["owner"]);
+
+
 		$("#isCreateTransaction").click(function(){
 			if(this.checked){
 				$("#create-transaction2").show(200);
@@ -23,6 +41,21 @@
 			}
 		});
 	});
+
+
+	/*接收多个其他页面传来的值*/
+	function GetRequest() {
+		var url = decodeURI(window.location.search); //获取url中"?"符后的字串
+		var theRequest = new Object();
+		if (url.indexOf("?") != -1) {
+			var str = url.substr(1);
+			strs = str.split("&");
+			for(var i = 0; i < strs.length; i++) {
+				theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+			}
+		}
+		return theRequest;
+	}
 </script>
 
 </head>
@@ -81,13 +114,13 @@
 	</div>
 
 	<div id="title" class="page-header" style="position: relative; left: 20px;">
-		<h4>转换线索 <small>李四先生-动力节点</small></h4>
+		<h4>转换线索 <small id="titleName"></small></h4>
 	</div>
 	<div id="create-customer" style="position: relative; left: 40px; height: 35px;">
-		新建客户：动力节点
+		<!--新建客户：动力节点-->
 	</div>
 	<div id="create-contact" style="position: relative; left: 40px; height: 35px;">
-		新建联系人：李四先生
+		<!--新建联系人：李四先生-->
 	</div>
 	<div id="create-transaction1" style="position: relative; left: 40px; height: 35px; top: 25px;">
 		<input type="checkbox" id="isCreateTransaction"/>
@@ -133,7 +166,7 @@
 	
 	<div id="owner" style="position: relative; left: 40px; height: 35px; top: 50px;">
 		记录的所有者：<br>
-		<b>zhangsan</b>
+		<b id="ownerName"></b>
 	</div>
 	<div id="operation" style="position: relative; left: 40px; height: 35px; top: 100px;">
 		<input class="btn btn-primary" type="button" value="转换">

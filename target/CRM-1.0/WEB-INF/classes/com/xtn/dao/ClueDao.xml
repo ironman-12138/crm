@@ -15,7 +15,7 @@
         select <include refid="sql2"></include>
         from tbl_clue c
         join tbl_user u
-        on c.owner = u.id
+        on c.owner=u.id
         <where>
             <if test="fullname != null and fullname != ''">
                 c.fullname like '%' #{fullname} '%'
@@ -51,9 +51,16 @@
         select <include refid="sql2"></include>
         from tbl_clue c
         join tbl_user u
-        on c.owner = u.id
-        where c.id = #{id}
+        on c.owner=u.id
+        where c.id=#{id}
     </select>
+
+    <delete id="disconnectById">
+        delete
+        from tbl_clue_activity_relation
+        where id=#{id}
+    </delete>
+
 </mapper>
 
 
