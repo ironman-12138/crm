@@ -48,7 +48,7 @@
                     dataType:"json",
                     success:function(data){
                         //data:{"stage":list1}
-                        //填充称呼列表
+                        //填充交易阶段列表
                         var html = "<option></option>";
                         $.each(data.stage,function (i,n) {
                             html += "<option value='" + n.value + "'>" + n.text + "</option>";

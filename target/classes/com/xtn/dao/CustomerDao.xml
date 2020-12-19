@@ -21,7 +21,13 @@
             #{id},#{owner},#{name},#{website},#{phone},#{createBy},#{createTime},#{contactSummary},#{nextContactTime},#{description},#{address}
         )
     </insert>
-  	
+
+    <select id="getCustomerName" resultType="String">
+        select name
+        from tbl_customer
+        where name like '%' #{name} '%'
+    </select>
+
 </mapper>
 
 

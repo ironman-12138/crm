@@ -15,6 +15,12 @@
             #{id},#{owner},#{source},#{customerId},#{fullname},#{appellation},#{email},#{mphone},#{job},#{birth},#{createBy},#{createTime},#{description},#{contactSummary},#{nextContactTime},#{address}
         )
     </insert>
+
+    <select id="getContactsListByName" resultType="com.xtn.domain.Contacts">
+        select <include refid="sql1"></include>
+        from tbl_contacts
+        where fullname like '%' #{name} '%'
+    </select>
 </mapper>
 
 

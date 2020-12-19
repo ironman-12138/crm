@@ -15,7 +15,55 @@
             #{id},#{owner},#{money},#{name},#{expectedDate},#{customerId},#{stage},#{type},#{source},#{activityId},#{contactsId},#{createBy},#{createTime},#{editBy},#{editTime},#{description},#{contactSummary},#{nextContactTime}
         )
     </insert>
-  	
+
+    <select id="selectTranList" resultType="com.xtn.domain.Tran">
+        select t.id,u.name as owner,t.money,t.name,t.expectedDate,c.name as customerId,t.stage,t.type,t.source,t.activityId,cs.fullname as contactsId,t.createBy,t.createTime,t.editBy,t.editTime,t.description,t.contactSummary,t.nextContactTime
+        from tbl_tran t
+        join tbl_user u
+        on t.owner=u.id
+        join tbl_customer c
+        on t.customerId=c.id
+        join tbl_contacts cs
+        on t.contactsId=cs.id
+        <where>
+            <if test="owner != null and owner != ''">
+                u.name like '%' #{owner} '%'
+            </if>
+            <if test="name != null and name != ''">
+                and t.name like '%' #{name} '%'
+            </if>
+            <if test="customerId != null and customerId != ''">
+                and c.name like '%' #{customerId} '%'
+            </if>
+            <if test="stage != null and stage != ''">
+                and t.stage like '%' #{stage} '%'
+            </if>
+            <if test="type != null and type != ''">
+                and t.type like '%' #{type} '%'
+            </if>
+            <if test="source != null and source != ''">
+                and t.source like '%' #{source} '%'
+            </if>
+            <if test="contactsId != null and contactsId != ''">
+                and cs.fullname like '%' #{contactsId} '%'
+            </if>
+        </where>
+        order by t.createTime desc
+    </select>
+
+    <select id="selectTran" resultType="com.xtn.domain.Tran">
+        select t.id,u.name as owner,t.money,t.name,t.expectedDate,c.name as customerId,t.stage,t.type,t.source,a.name as activityId,cs.fullname as contactsId,t.createBy,t.createTime,t.editBy,t.editTime,t.description,t.contactSummary,t.nextContactTime
+        from tbl_tran t
+        join tbl_user u
+        on t.owner=u.id
+        join tbl_customer c
+        on t.customerId=c.id
+        left join tbl_contacts cs
+        on t.contactsId=cs.id
+        left join tbl_activity a
+        on t.activityId=a.id
+        where t.id=#{id}
+    </select>
 </mapper>
 
 

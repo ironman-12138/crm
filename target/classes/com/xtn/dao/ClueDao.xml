@@ -39,7 +39,7 @@
                 and c.state like '%' #{state} '%'
             </if>
         </where>
-        order by createTime desc
+        order by c.createTime desc
     </select>
 
     <insert id="saveClue">

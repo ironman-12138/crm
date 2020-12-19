@@ -8,9 +8,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 服务器启动的监听器
@@ -40,6 +38,32 @@ public class SysInitListener implements ServletContextListener {
         for (String key:set) {
             application.setAttribute(key,map.get(key));
         }
+
+        //-------------------------------------------------------------------------------
+
+        /**
+         * 处理Stage2Possibility.properties资源文件
+         * 将文件中的键值对关系解析为java中的键值对的关系
+         * ("01资质审查",10)
+         * ("02需求分析",10)
+         * ...
+         */
+        Map<String , String> map2 = new HashMap<>();
+        //解析properties
+        ResourceBundle bundle = ResourceBundle.getBundle("Stage2Possibility");
+
+        Enumeration<String> em = bundle.getKeys();
+        while (em.hasMoreElements()){
+            //阶段
+            String key = em.nextElement();
+            //可能性
+            String value = bundle.getString(key);
+
+            map2.put(key,value);
+        }
+
+        //将map2保存到服务器缓存中
+        application.setAttribute("pMap",map2);
 
     }
 

@@ -15,6 +15,12 @@
             #{id},#{stage},#{money},#{expectedDate},#{createTime},#{createBy},#{tranId}
         )
     </insert>
+
+    <select id="selectTranHistoryList" resultType="com.xtn.domain.TranHistory">
+        select <include refid="sql1"></include>
+        from tbl_tran_history
+        where tranId=#{id}
+    </select>
 </mapper>
 
 
