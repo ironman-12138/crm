@@ -18,7 +18,6 @@ public interface ClueDao {
     //根据id查询线索信息
     Clue selectClueById(@Param("id") String id);
 
-    //解除线索和市场活动的关联
-    int disconnectById(@Param("id") String id);
-
+    //删除线索
+    int deleteClue(@Param("id") String clueId);
 }

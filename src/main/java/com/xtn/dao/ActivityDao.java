@@ -32,4 +32,7 @@ public interface ActivityDao {
 
     //根据活动名name查询市场活动信息排除已关联的市场活动
     List<Activity> getActivityListByNameAndNotByClueId(@Param("name") String name,@Param("clueId") String clueId);
+
+    //根据活动名搜索市场活动列表
+    List<Activity> getActivityListByName(@Param("name") String name);
 }

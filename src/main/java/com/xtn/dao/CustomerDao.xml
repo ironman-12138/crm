@@ -4,7 +4,23 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.xtn.dao.CustomerDao">
-	
+
+    <sql id="sql1">
+        id,owner,name,website,phone,createBy,createTime,contactSummary,nextContactTime,description,address
+    </sql>
+
+    <select id="selectCustomerByName" resultType="com.xtn.domain.Customer">
+        select <include refid="sql1"></include>
+        from tbl_customer
+        where name = #{company}
+    </select>
+
+    <insert id="saveCustomer">
+        insert into tbl_customer(<include refid="sql1"></include>)
+        values(
+            #{id},#{owner},#{name},#{website},#{phone},#{createBy},#{createTime},#{contactSummary},#{nextContactTime},#{description},#{address}
+        )
+    </insert>
   	
 </mapper>
 

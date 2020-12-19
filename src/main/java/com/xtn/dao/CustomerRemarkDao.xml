@@ -4,7 +4,17 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.xtn.dao.CustomerRemarkDao">
-	
+
+    <sql id="sql1">
+        id,noteContent,createBy,createTime,editFlag,customerId
+    </sql>
+
+    <insert id="saveCustomerRemark">
+        insert into tbl_customer_remark(<include refid="sql1"></include>)
+        values(
+            #{id},#{noteContent},#{createBy},#{createTime},#{editFlag},#{customerId}
+        )
+    </insert>
   	
 </mapper>
 

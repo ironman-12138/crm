@@ -1,10 +1,9 @@
 package com.xtn.dao;
 
-import com.xtn.domain.ClueActivityRelation;
-
-import java.util.List;
+import com.xtn.domain.ContactsActivityRelation;
 
 public interface ContactsActivityRelationDao {
-    //关联线索和市场活动信息
-    int contactClueAndActivity(ClueActivityRelation car);
+
+    //添加联系人和市场活动的关系
+    int saveContactsActivityRelation(ContactsActivityRelation csar);
 }

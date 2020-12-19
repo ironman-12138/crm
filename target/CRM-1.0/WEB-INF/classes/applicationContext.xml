@@ -104,4 +104,6 @@
     <!--声明service-->
     <bean id="dicService" class="com.xtn.service.impl.DicServiceImpl">
     </bean>
+    <!--<bean id="activityService" class="com.xtn.service.impl.ActivityServiceImpl">
+    </bean>-->
 </beans>

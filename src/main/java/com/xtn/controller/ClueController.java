@@ -1,9 +1,6 @@
 package com.xtn.controller;
 
-import com.xtn.domain.Activity;
-import com.xtn.domain.Clue;
-import com.xtn.domain.ClueActivityRelation;
-import com.xtn.domain.User;
+import com.xtn.domain.*;
 import com.xtn.service.ActivityService;
 import com.xtn.service.ClueService;
 import com.xtn.service.UserService;
@@ -149,5 +146,38 @@ public class ClueController {
         Map<String,Object> map = new HashMap<>();
         map.put("success",flag);
         return map;
+    }
+
+    //根据活动名搜索市场活动列表
+    @GetMapping(value = "/getActivityListByName.do")
+    @ResponseBody
+    public Object getActivityListByName(String name){
+        List<Activity> aList = activityService.getActivityListByName(name);
+        return aList;
+    }
+
+    //线索转化为客户，若有交易添加交易记录
+    @PostMapping(value = "/convert.do")
+    public String convert(HttpServletRequest request, String flag, String clueId, Tran tran){
+        String createBy = ((User)request.getSession().getAttribute("user")).getName();
+        if ("true".equals(flag)){
+            //flag为true代表有交易,创建交易
+            //添加id
+            tran.setId(UUIDUtil.getUUID());
+            //添加创建时间
+            tran.setCreateTime(DateTimeUtil.getSysTime());
+            //添加创建人
+            tran.setCreateBy(createBy);
+        }
+
+        //执行业务层的方法转换线索
+        boolean f = clueService.convert(clueId, tran, createBy);
+
+        //重定向
+        if (f){
+            return "redirect:/workbench/clue/index.html";
+        }else {
+            return null;
+        }
     }
 }

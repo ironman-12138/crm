@@ -55,12 +55,11 @@
         where c.id=#{id}
     </select>
 
-    <delete id="disconnectById">
+    <delete id="deleteClue">
         delete
-        from tbl_clue_activity_relation
-        where id=#{id}
+        from tbl_clue
+        where id = #{id}
     </delete>
-
 </mapper>
 
 

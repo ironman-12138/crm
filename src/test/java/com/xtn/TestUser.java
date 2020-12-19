@@ -1,12 +1,15 @@
 package com.xtn;
 
 import com.xtn.dao.DicTypeDao;
+import com.xtn.dao.UserDao;
 import com.xtn.service.ActivityService;
 import com.xtn.service.DicService;
 import com.xtn.service.impl.ActivityServiceImpl;
 import com.xtn.service.impl.DicServiceImpl;
 import com.xtn.utils.DateTimeUtil;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.List;
 import java.util.Map;
@@ -47,4 +50,16 @@ public class TestUser {
         }
     }
 
+    //测试批量删除市场活动业务
+    @Test
+    public void TestDeleteActivity(){
+        //测试前先去applicationContext.xml声明service对象
+        String config = "applicationContext.xml";
+        ApplicationContext ac = new ClassPathXmlApplicationContext(config);
+
+        ActivityService service = (ActivityService) ac.getBean("activityService");
+        String[] id = {"0a3a3173a6344db49f90567ae0d86505","0a3a3173a6344db49f90567ae0d86505"};
+        boolean flag = service.deleteActivity(id);
+        System.out.println("结果===>"+flag);
+    }
 }

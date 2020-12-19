@@ -68,7 +68,6 @@ public class ActivityServiceImpl implements ActivityService {
         int count2 = activityRemarkDao.deleteActivityRemark(id);
         if (count1 != count2){
             flag = false;
-        }else {
             throw new TransactionException("要删除的备注数量不对");
         }
 
@@ -155,5 +154,11 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public List<Activity> getActivityListByNameAndNotByClueId(String name,String clueId) {
         return activityDao.getActivityListByNameAndNotByClueId(name, clueId);
+    }
+
+    //根据活动名搜索市场活动列表
+    @Override
+    public List<Activity> getActivityListByName(String name) {
+        return activityDao.getActivityListByName(name);
     }
 }

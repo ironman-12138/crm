@@ -4,7 +4,22 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.xtn.dao.ClueRemarkDao">
-	
+
+    <sql id="sql1">
+        id,noteContent,createBy,createTime,editBy,editTime,editFlag,clueId
+    </sql>
+
+    <select id="selectClueRemarkByClueId" resultType="com.xtn.domain.ClueRemark">
+        select <include refid="sql1"></include>
+        from tbl_clue_remark
+        where clueId = #{clueId}
+    </select>
+
+    <delete id="deleteClueRemark">
+        delete
+        from tbl_clue_remark
+        where id = #{id}
+    </delete>
   	
 </mapper>
 

@@ -4,9 +4,24 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.xtn.dao.ClueActivityRelationDao">
-	
-	
-  	
+
+	<select id="selectClueActivityRelationByClueId" resultType="com.xtn.domain.ClueActivityRelation">
+        select id,clueId,activityId
+        from tbl_clue_activity_relation
+        where clueId = #{clueId}
+    </select>
+
+    <insert id="contactClueAndActivity">
+        insert into tbl_clue_activity_relation(id,clueId,activityId)
+        values(#{id},#{clueId},#{activityId})
+    </insert>
+
+    <delete id="deleteClueActivityRelation">
+        delete
+        from tbl_clue_activity_relation
+        where id = #{id}
+    </delete>
+
 </mapper>
 
 

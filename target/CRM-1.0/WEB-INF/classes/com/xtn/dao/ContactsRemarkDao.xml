@@ -4,8 +4,17 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.xtn.dao.ContactsRemarkDao">
-	
-  	
+
+    <sql id="sql1">
+        id,noteContent,createBy,createTime,editFlag,contactsId
+    </sql>
+
+  	<insert id="saveContactsRemark">
+        insert into tbl_contacts_remark(<include refid="sql1"></include>)
+        values(
+            #{id},#{noteContent},#{createBy},#{createTime},#{editFlag},#{contactsId}
+        )
+    </insert>
 </mapper>
 
 

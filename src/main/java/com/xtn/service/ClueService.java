@@ -3,6 +3,7 @@ package com.xtn.service;
 import com.xtn.domain.Activity;
 import com.xtn.domain.Clue;
 import com.xtn.domain.ClueActivityRelation;
+import com.xtn.domain.Tran;
 import com.xtn.vo.PaginationVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -29,4 +30,7 @@ public interface ClueService {
 
     //关联线索和市场活动信息
     boolean contactClueAndActivity(String clueId,String[] activityId);
+
+    //转换线索
+    boolean convert(String clueId, Tran tran, String createBy);
 }
