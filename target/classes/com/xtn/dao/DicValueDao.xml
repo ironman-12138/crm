@@ -15,4 +15,11 @@
         where typeCode = #{typeCode}
         order by orderNo
     </select>
+
+    <select id="getStageList" resultType="String">
+        select value
+        from tbl_dic_value
+        where typeCode = #{typeCode}
+        order by orderNo
+    </select>
 </mapper>

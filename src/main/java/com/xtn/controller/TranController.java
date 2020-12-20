@@ -1,10 +1,7 @@
 package com.xtn.controller;
 
 import com.xtn.domain.*;
-import com.xtn.service.ActivityService;
-import com.xtn.service.CustomerService;
-import com.xtn.service.TranService;
-import com.xtn.service.UserService;
+import com.xtn.service.*;
 import com.xtn.utils.DateTimeUtil;
 import com.xtn.utils.UUIDUtil;
 import com.xtn.vo.PaginationVo;
@@ -36,6 +33,8 @@ public class TranController {
     private ActivityService activityService;
     @Resource
     private CustomerService customerService;
+    @Resource
+    private DicService dicService;
 
 
     //获取数据字典数据
@@ -167,5 +166,54 @@ public class TranController {
             t.setPossibility(possibility);
         }
         return th;
+    }
+
+    //获取交易阶段集合
+    @GetMapping(value = "/getStage.do")
+    @ResponseBody
+    public Object getStage(HttpServletRequest request){
+        //获取上下文域对象
+        ServletContext application = request.getServletContext();
+        //阶段和可能性的关系对象
+        Map<String ,String> map = (Map<String, String>) application.getAttribute("pMap");
+        Map<String,Object> m = new HashMap<>();
+        m.put("map",map);
+        List<String> list = dicService.getStage();
+        m.put("stageList",list);
+        return m;
+    }
+
+    //改变交易阶段
+    @GetMapping(value = "/changeStage.do")
+    @ResponseBody
+    public Object changeStage(HttpServletRequest request,Tran t){
+        boolean flag = false;
+        //添加修改时间
+        t.setEditTime(DateTimeUtil.getSysTime());
+        //添加修改人
+        t.setEditBy(((User)request.getSession().getAttribute("user")).getName());
+
+        flag = tranService.changeStage(t);
+        //获取上下文域对象
+        ServletContext application = request.getServletContext();
+        //阶段和可能性的关系对象
+        Map<String ,String> pMap = (Map<String, String>) application.getAttribute("pMap");
+        //获取改变之后阶段的可能性
+        String possibility = pMap.get(t.getStage());
+        t.setPossibility(possibility);
+
+        //向浏览器返回结果
+        Map<String,Object> map = new HashMap<>();
+        map.put("success",flag);
+        map.put("t",t);
+        return map;
+    }
+
+    //获取交易阶段和相应的交易数量
+    @GetMapping(value = "/getCharts.do")
+    @ResponseBody
+    public Object getCharts(){
+        Map<String,Object> map = tranService.getCharts();
+        return map;
     }
 }

@@ -15,9 +15,12 @@ public interface ClueDao {
     //保存线索信息
     public int saveClue(Clue clue);
 
-    //根据id查询线索信息
+    //根据id查询线索信息(所有者的id转成姓名)
     Clue selectClueById(@Param("id") String id);
 
     //删除线索
     int deleteClue(@Param("id") String clueId);
+
+    //根据id查询线索信息
+    Clue selectClueById2(@Param("id") String clueId);
 }

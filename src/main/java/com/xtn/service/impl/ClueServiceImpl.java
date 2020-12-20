@@ -123,7 +123,7 @@ public class ClueServiceImpl implements ClueService {
         String createTime = DateTimeUtil.getSysTime();
 
         //(1)根据id获取线索对象
-        Clue clue = clueDao.selectClueById(clueId);
+        Clue clue = clueDao.selectClueById2(clueId);
 
         //(2)根据线索对象获取客户信息，当客户不存在时新建客户（根据公司名称判断客户是否存在）
         String company = clue.getCompany();

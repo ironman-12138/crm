@@ -2,12 +2,17 @@ package com.xtn.web.listener;
 
 import com.xtn.service.DicService;
 import com.xtn.service.impl.DicServiceImpl;
+import com.xtn.utils.Proper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -52,6 +57,7 @@ public class SysInitListener implements ServletContextListener {
         //解析properties
         ResourceBundle bundle = ResourceBundle.getBundle("Stage2Possibility");
 
+
         Enumeration<String> em = bundle.getKeys();
         while (em.hasMoreElements()){
             //阶段
@@ -61,6 +67,24 @@ public class SysInitListener implements ServletContextListener {
 
             map2.put(key,value);
         }
+        /*Properties props = new Proper();
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("E:\\IdeaMaven\\CRM\\target\\classes\\Stage2Possibility.properties"));
+            props.load(bufferedReader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Set<String> s = props.stringPropertyNames();
+        Iterator it = s.iterator();
+        while (it.hasNext()){
+            //阶段
+            String key = (String) it.next();
+            //System.out.println(key);
+            //可能性
+            String value = props.getProperty(key);
+
+            map2.put(key,value);
+        }*/
 
         //将map2保存到服务器缓存中
         application.setAttribute("pMap",map2);

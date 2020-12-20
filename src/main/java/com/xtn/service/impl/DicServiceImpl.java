@@ -34,4 +34,10 @@ public class DicServiceImpl implements DicService {
         }
         return map;
     }
+
+    //获取阶段集合
+    @Override
+    public List<String> getStage() {
+        return dicValueDao.getStageList("stage");
+    }
 }

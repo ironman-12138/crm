@@ -26,7 +26,11 @@
 
 	//默认情况下取消和保存按钮是隐藏的
 	var cancelAndSaveBtnDefault = true;
-	var VALUES;
+	var VALUES;  //存交易id
+	var MONEY;   //存交易金额
+	var EXPECTEDDATE;  //存预计交易时间
+	var POINT;  //存正常阶段和丢失阶段的分界点下标
+	var TOTALNUM;  //存总阶段数
 
 	$(function(){
 
@@ -37,10 +41,13 @@
 
 		/*向后台发送请求获取参数填充页面*/
 		$.ajax({
+			async:false,
 			url:"tran/getTranById.do",
 			data:{"id":tranId},
 			dataType:"json",
 			success:function(data){
+				EXPECTEDDATE = data.expectedDate;
+				MONEY = data.money;
 				//data(Tran):{id:?,owner:?,money:?,name:?,...}
 				$("#tranTitle").html(data.customerId + "-" + data.name + "&nbsp;<small>￥" + data.money + "</small>");
 				$("#tran-owner").html(data.owner);
@@ -72,26 +79,90 @@
 
 
 		/*获取当前交易的历史信息*/
+		refreshTranHistory(tranId);
+
+
+		/*获取阶段和可能性的对应关系，将阶段图标动态生成*/
 		$.ajax({
-			url:"tran/getTranHistoryList.do",
-			data:{"id":tranId},
+			async:false,
+			url:"tran/getStage.do",
 			dataType:"json",
-			success:function(data){
-				//data(TranHistoryList):[{交易历史1},{交易历史2},{交易历史3},...]
-				var html = "";
-				$.each(data,function (i,n) {
-					html += '<tr>';
-					html += '<td>' + n.stage + '</td>';
-					html += '<td>' + n.money + '</td>';
-					html += '<td>' + n.possibility + '</td>';
-					html += '<td>' + n.expectedDate + '</td>';
-					html += '<td>' + n.createTime + '</td>';
-					html += '<td>' + n.createBy + '</td>';
-					html += '</tr>';
-				})
-				$("#historyBody").html(html);
-			},
-			type:"get"
+			success:function (d) {
+				//d:["map":map集合,"stageList":{"01资质审查":10,...}]
+				var data = d.map;
+				var stageList = d.stageList;
+				//获取阶段
+				var stage = $("#tran-stage").text();
+				//获取当前阶段的可能性
+				var possibility = data[stage];
+				//获取正常阶段和丢失阶段的分界点下标
+				for (var i = 0; i < stageList.length; i++){
+					//遍历取出每个阶段的可能性
+					var dataP = data[stageList[i]];
+					if ("0" == dataP){
+						POINT = i;
+						break;
+					}
+				}
+				//获取总阶段数量
+				TOTALNUM = stageList.length;
+
+				if ("0" == possibility){
+					//当前阶段可能性为0
+					for (var i = 0; i < stageList.length; i++){
+						//遍历取出每个阶段的可能性
+						var dataPossibility = data[stageList[i]];
+
+						if ("0" == dataPossibility){
+							//如果遍历的可能性为0(说明是后两个，是x标图)
+							if (stageList[i] == stage){
+								//如果是当前阶段(是红x)
+								$("#stageStatus").append('<span id="'+i+'" onclick="changeStage(\''+stageList[i]+'\','+i+')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="'+stageList[i]+'" style="color: #FF0000;"></span>\n' +
+										'-----------');
+							}else {
+								//如果不是当前阶段(是黑x)
+								$("#stageStatus").append('<span id="'+i+'" onclick="changeStage(\''+stageList[i]+'\','+i+')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="'+stageList[i]+'" style="color: #000000;"></span>\n' +
+										'-----------');
+							}
+
+						}else {
+							//如果遍历的可能性不为0(说明是前7个，是黑圈)
+							$("#stageStatus").append('<span id="'+i+'" onclick="changeStage(\''+stageList[i]+'\','+i+')" class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="'+stageList[i]+'" style="color: #000000;"></span>\n' +
+									'-----------');
+						}
+					}
+
+				}else {
+					//当前阶段可能性不为0(说明前7个可能是绿圈或绿标，后两个为红x)
+					for (var i = 0; i < stageList.length; i++){
+						//遍历取出每个阶段的可能性
+						var dataPossibility = data[stageList[i]];
+
+						if ("0" == dataPossibility) {
+							//如果遍历的可能性为0(说明是后两个，是黑x)
+							$("#stageStatus").append('<span id="'+i+'" onclick="changeStage(\''+stageList[i]+'\','+i+')" class="glyphicon glyphicon-remove mystage" data-toggle="popover" data-placement="bottom" data-content="'+stageList[i]+'" style="color: #000000;"></span>\n' +
+									'-----------');
+						}else {
+							//如果遍历的可能性不为0
+							if (stageList[i] == stage){
+								//如果是当前阶段(绿标)
+								$("#stageStatus").append('<span id="'+i+'" onclick="changeStage(\''+stageList[i]+'\','+i+')" class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom" data-content="'+stageList[i]+'" style="color: #90F790;"></span>\n' +
+										'-----------');
+							}else if (parseInt(dataPossibility) < parseInt(possibility)){
+								//如果小于当前阶段(绿圈)
+								$("#stageStatus").append('<span id="'+i+'" onclick="changeStage(\''+stageList[i]+'\','+i+')" class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="'+stageList[i]+'" style="color: #90F790;"></span>\n' +
+										'-----------');
+							}else {
+								//如果大于当前阶段(黑圈)
+								$("#stageStatus").append('<span id="'+i+'" onclick="changeStage(\''+stageList[i]+'\','+i+')" class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="'+stageList[i]+'" style="color: #000000;"></span>\n' +
+										'-----------');
+							}
+
+						}
+
+					}
+				}
+			}
 		})
 
 
@@ -167,6 +238,160 @@
 		}
 		return theRequest;
 	}
+
+
+	/*
+	* 改变交易阶段
+	* sta:需要改变的阶段
+	* i:改变阶段的下标
+	* */
+	function changeStage(sta,i) {
+		$.ajax({
+			url:"tran/changeStage.do",
+			data:{
+				"id":VALUES["id"],
+				"stage":sta,
+				"money":MONEY,                //生成交易历史用
+				"expectedDate":EXPECTEDDATE   //生成交易历史用
+			},
+			dataType:"json",
+			success:function(data){
+				//data:{"success":true/false,"t":{交易}}
+				if (data.success){
+					//局部刷新页面的阶段、可能性、修该人、修改时间
+					$("#tran-stage").html(data.t.stage);
+					$("#tran-possibility").html(data.t.possibility);
+					$("#tran-editBy").html(data.t.editBy);
+					$("#tran-editTime").html(data.t.editTime);
+
+					//改变过后对图标重新判断，修改图标样式
+					changeIcon(data.t.stage,i);
+
+					//刷新交易历史
+					refreshTranHistory(VALUES["id"]);
+				}else {
+					alert("改变阶段失败");
+				}
+			},
+			type:"get"
+		})
+	}
+
+
+	/*改变图标样式
+	* index:当前阶段的下标
+	* sta:当前阶段
+	* */
+	function changeIcon(sta,index) {
+		//当前阶段
+		var currentStage = sta;
+		//当前阶段可能性
+		var currentPossibility = $("#tran-possibility").html();
+
+		/*alert("当前阶段："+currentStage)
+		alert("可能性："+currentPossibility)
+		alert("当前阶段下标："+i)
+		alert("分界点下标："+POINT)*/
+
+		if (currentPossibility == "0"){
+			//如果当前阶段可能性为0
+			for (var i = 0; i < POINT; i++){
+				//遍历前7个(都是黑圈)
+				//移除原有span的样式
+				$("#"+i).removeClass();
+				//添加新样式
+				$("#"+i).addClass("glyphicon glyphicon-record mystage");
+				//为新样式赋予颜色
+				$("#"+i).css("color","#000000");
+			}
+			for (var i = POINT; i < TOTALNUM; i++){
+				//遍历后两个
+				if (i == index){
+					//如果是当前下标（红x）
+					//移除原有span的样式
+					$("#"+i).removeClass();
+					//添加新样式
+					$("#"+i).addClass("glyphicon glyphicon-remove mystage");
+					//为新样式赋予颜色
+					$("#"+i).css("color","#FF0000");
+				}else {
+					//不是当前下标（黑x）
+					//移除原有span的样式
+					$("#"+i).removeClass();
+					//添加新样式
+					$("#"+i).addClass("glyphicon glyphicon-remove mystage");
+					//为新样式赋予颜色
+					$("#"+i).css("color","#000000");
+				}
+			}
+		}else {
+			//如果当前阶段可能性不为0
+			for (var i = 0; i < POINT; i++){
+				//遍历前7个
+				if (i == index){
+					//如果是当前阶段（绿标）
+					//移除原有span的样式
+					$("#"+i).removeClass();
+					//添加新样式
+					$("#"+i).addClass("glyphicon glyphicon-map-marker mystage");
+					//为新样式赋予颜色
+					$("#"+i).css("color","#90F790");
+				}else if (i < index){
+					//如果小于当前阶段（绿圈）
+					//移除原有span的样式
+					$("#"+i).removeClass();
+					//添加新样式
+					$("#"+i).addClass("glyphicon glyphicon-record mystage");
+					//为新样式赋予颜色
+					$("#"+i).css("color","#90F790");
+				}else {
+					//如果大于当前阶段（黑圈）
+					//移除原有span的样式
+					$("#"+i).removeClass();
+					//添加新样式
+					$("#"+i).addClass("glyphicon glyphicon-record mystage");
+					//为新样式赋予颜色
+					$("#"+i).css("color","#000000");
+				}
+
+			}
+			for (var i = POINT; i < TOTALNUM; i++){
+				//遍历后两个(都是黑x)
+				//移除原有span的样式
+				$("#"+i).removeClass();
+				//添加新样式
+				$("#"+i).addClass("glyphicon glyphicon-remove mystage");
+				//为新样式赋予颜色
+				$("#"+i).css("color","#000000");
+			}
+		}
+	}
+
+
+	/*刷新当前交易的历史信息*/
+	function refreshTranHistory(tranId) {
+		$.ajax({
+			url:"tran/getTranHistoryList.do",
+			data:{"id":tranId},
+			dataType:"json",
+			success:function(data){
+				//data(TranHistoryList):[{交易历史1},{交易历史2},{交易历史3},...]
+				var html = "";
+				$.each(data,function (i,n) {
+					html += '<tr>';
+					html += '<td>' + n.stage + '</td>';
+					html += '<td>' + n.money + '</td>';
+					html += '<td>' + n.possibility + '</td>';
+					html += '<td>' + n.expectedDate + '</td>';
+					html += '<td>' + n.createTime + '</td>';
+					html += '<td>' + n.createBy + '</td>';
+					html += '</tr>';
+				})
+				$("#historyBody").html(html);
+			},
+			type:"get"
+		})
+	}
 	
 </script>
 
@@ -190,27 +415,27 @@
 	</div>
 
 	<!-- 阶段状态 -->
-	<div style="position: relative; left: 40px; top: -50px;">
+	<div style="position: relative; left: 40px; top: -50px;" id="stageStatus">
 		阶段&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
-		-----------
+		<!--<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
+		-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
 		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="需求分析" style="color: #90F790;"></span>
-		-----------
+		-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
 		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="价值建议" style="color: #90F790;"></span>
-		-----------
+		-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
 		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="确定决策者" style="color: #90F790;"></span>
-		-----------
+		-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
 		<span class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom" data-content="提案/报价" style="color: #90F790;"></span>
-		-----------
+		-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
 		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="谈判/复审"></span>
-		-----------
+		-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
 		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="成交"></span>
-		-----------
+		-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
 		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="丢失的线索"></span>
-		-----------
+		-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
 		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="因竞争丢失关闭"></span>
-		-----------
-		<span class="closingDate">2010-10-10</span>
+		-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+		<!--<span class="closingDate">2010-10-10</span>-->
 	</div>
 	
 	<!-- 详细信息 -->

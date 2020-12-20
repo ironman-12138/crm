@@ -64,6 +64,23 @@
         on t.activityId=a.id
         where t.id=#{id}
     </select>
+
+    <update id="changeStage">
+        update tbl_tran
+        set stage=#{stage},editBy=#{editBy},editTime=#{editTime}
+        where id=#{id}
+    </update>
+
+    <select id="getTotal" resultType="int">
+        select count(*)
+        from tbl_tran
+    </select>
+
+    <select id="getCharts" resultType="map">
+        select stage as name,count(*) as value
+        from tbl_tran
+        group by stage
+    </select>
 </mapper>
 
 

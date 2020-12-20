@@ -60,6 +60,12 @@
         from tbl_clue
         where id = #{id}
     </delete>
+
+    <select id="selectClueById2" resultType="com.xtn.domain.Clue">
+        select <include refid="sql1"></include>
+        from tbl_clue c
+        where id=#{id}
+    </select>
 </mapper>
 
 

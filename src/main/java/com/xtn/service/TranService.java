@@ -24,4 +24,10 @@ public interface TranService {
 
     //根据交易id获取交易历史列表
     List<TranHistory> selectTranHistoryList(String id);
+
+    //改变交易阶段
+    boolean changeStage(Tran t);
+
+    //获取交易阶段和起对应的交易数量
+    Map<String, Object> getCharts();
 }

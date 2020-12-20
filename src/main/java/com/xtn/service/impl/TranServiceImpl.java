@@ -15,6 +15,7 @@ import com.xtn.vo.PaginationVo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -120,4 +121,49 @@ public class TranServiceImpl implements TranService {
     public List<TranHistory> selectTranHistoryList(String id) {
         return tranHistoryDao.selectTranHistoryList(id);
     }
+
+    //改变交易阶段
+    @Override
+    public boolean changeStage(Tran t) {
+        boolean flag = false;
+        //改变交易阶段
+        int count = tranDao.changeStage(t);
+        if (count == 1){
+            flag = true;
+        }
+
+        //生成交易历史
+        TranHistory tranHistory = new TranHistory();
+        tranHistory.setCreateBy(t.getEditBy());
+        tranHistory.setCreateTime(t.getEditTime());
+        tranHistory.setId(UUIDUtil.getUUID());
+        tranHistory.setExpectedDate(t.getExpectedDate());
+        tranHistory.setMoney(t.getMoney());
+        tranHistory.setStage(t.getStage());
+        tranHistory.setTranId(t.getId());
+        int count2 = tranHistoryDao.saveTranHistory(tranHistory);
+        if (count2 == 1){
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    //获取交易阶段和起对应的交易数量
+    @Override
+    public Map<String, Object> getCharts() {
+        //获取交易总数量total
+        int total = tranDao.getTotal();
+
+        //获取交易阶段及其数量dataList
+        List<Map<String,Object>> dataList = tranDao.getCharts();
+
+        //将total和dataList保存到Map集合
+        Map<String,Object> map = new HashMap<>();
+        map.put("total",total);
+        map.put("dataList",dataList);
+
+        return map;
+    }
+
 }
